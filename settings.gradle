@@ -1,0 +1,3 @@
+rootProject.name = "ehrPatientSDK"
+include ':app'
+include ':PatientSDK'

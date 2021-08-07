@@ -1,6 +1,10 @@
 plugins {
     id 'com.android.library'
 }
+apply plugin: 'maven'
+
+String NEXUS_USERNAME='rasthana'
+String NEXUS_PASSWORD='Educat10n~!@'
 
 android {
     compileSdkVersion 30
@@ -28,15 +32,30 @@ android {
     }
 }
 
+uploadArchives {
+    repositories.mavenDeployer {
+
+        snapshotRepository(url: 'https://s01.oss.sonatype.org/content/repositories/snapshots/') {
+            authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+        }
+
+        repository(url: 'https://s01.oss.sonatype.org/content/repositories/releases/') {
+            authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+        }
+    }
+}
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.q42:qlassified:0.1.1'
 }
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

@@ -3,24 +3,31 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://s01.oss.sonatype.org/content/groups/public/"
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.2.2"
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.8.0'
     }
 }
 
 allprojects {
+    version = VERSION_NAME
+    group = GROUP
+
     repositories {
         google()
         mavenCentral()
         jcenter() // Warning: this repository is going to shut down soon
-    }
-    plugins.withId("com.vanniktech.maven.publish") {
-        mavenPublish {
-            sonatypeHost = "S01"
+        maven {
+            url "https://s01.oss.sonatype.org/content/groups/public/"
         }
     }
 }
 
-//apply plugin: "com.vanniktech.maven.publish"
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
+
+apply plugin: 'android-reporting'

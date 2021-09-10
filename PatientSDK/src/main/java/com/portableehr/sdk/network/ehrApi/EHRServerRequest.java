@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.portableehr.sdk.EHRLibRuntime;
+import com.portableehr.sdk.PehrSDKConfiguration;
 import com.portableehr.sdk.network.EHRGuid;
 import com.portableehr.sdk.network.NAO.inbound.IBDeviceInfo;
 import com.portableehr.sdk.network.NAO.inbound.IBUser;
@@ -35,6 +36,7 @@ public class EHRServerRequest {
     private String                  command;
     private String                  trackingId;
     private String                  deviceGuid;
+    private String                  appGuid;
     private String                  appAlias;
     private IBVersion               appVersion;
     private HashMap<String, Object> parameters;
@@ -56,8 +58,11 @@ public class EHRServerRequest {
         this.setDeviceGuid(deviceInfo.getDeviceGuid());
         this.trackingId = EHRGuid.guid();
         this.parameters = new HashMap<>();
-        this.appAlias = EHRLibRuntime.kAppAlias;
-        this.appVersion = EHRLibRuntime.kAppVersion;
+
+        PehrSDKConfiguration config = PehrSDKConfiguration.getInstance();
+        this.appGuid = config.getAppGuid();
+        this.appAlias = config.getAppAlias();
+        this.appVersion = config.getAppVersion();
     }
 
     public EHRServerRequest(String route, String command) {
@@ -142,6 +147,13 @@ public class EHRServerRequest {
         }
     }
 
+    public void setAppGuid(String appGuid) {
+        this.appGuid = appGuid;
+    }
+
+    public String getAppGuid() {
+        return appGuid;
+    }
 
     public void setAppAlias(String appAlias) {
         this.appAlias = appAlias;

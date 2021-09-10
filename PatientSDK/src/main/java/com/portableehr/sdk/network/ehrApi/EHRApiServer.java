@@ -29,9 +29,6 @@ public class EHRApiServer {
 
     public EHRApiServer() {
         onNew();
-        this.scheme = "http";
-        this.serverDNSname = "api.crea-med.local";
-        this.port = 80;
     }
 
     public static EHRApiServer create(String scheme, String serverDNSname, int port) {
@@ -45,24 +42,6 @@ public class EHRApiServer {
     public static EHRApiServer defaultApiServer() {
         return EHRLibRuntime.getCurrentServer();
     }
-
-    @SuppressWarnings("unused")
-    public static EHRApiServer debugApiServer() {
-        return EHRApiServer.create("http", "192.168.2.13", 8080);
-    }
-
-    public static EHRApiServer productionApiServer() {
-        return EHRApiServer.create("https", "api.portableehr.ca", 443);
-    }
-
-    public static EHRApiServer partnerApiServer(){
-        return EHRApiServer.create("https", "api.portableehr.io", 443);
-    }
-
-    public static EHRApiServer stagingApiServer() {
-        return EHRApiServer.create("https", "api.portableehr.net", 443);
-    }
-
 
     public String getScheme() {
         return this.scheme;

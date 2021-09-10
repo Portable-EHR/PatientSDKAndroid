@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.portableehr.patientsdk.models.SecureCredentials;
 import com.portableehr.patientsdk.models.UserModel;
+import com.portableehr.sdk.PehrSDKConfiguration;
 import com.portableehr.sdk.models.ModelRefreshPolicyEnum;
 import com.portableehr.sdk.models.notification.NotificationModel;
 import com.portableehr.sdk.models.service.ServiceModel;
@@ -66,7 +67,7 @@ public class AppState {
 
     }
 
-    public static boolean create(Context context, String desiredStackKey, boolean deepReset) {
+    public static boolean create(Context context, boolean deepReset) {
 
         // in the beginning, there was a keystore !
 
@@ -89,12 +90,13 @@ public class AppState {
 
         boolean success;
 
+        String desiredStackKey = PehrSDKConfiguration.getInstance().getAppStackKey();
         if (!newInstall) {
             boolean keepStack;
             keepStack = _instance.getStackKey().contentEquals(desiredStackKey);
             if (keepStack) {
                 if (deepReset) {
-                    success = _instance.initOnDevice(context) && _instance.save(context);
+                    success = _instance.initOnDevice(context) && _instance.save();
                 } else {
                     success = true;
                 }
@@ -103,48 +105,14 @@ public class AppState {
                 success = _instance.initOnDevice(context);
                 if (success) {
                     _instance.setStackKey(desiredStackKey);
-                    _instance.save(context);
+                    _instance.save();
                 }
             }
 
         } else {
-            success = _instance.initOnDevice(context) && _instance.save(context);
+            success = _instance.initOnDevice(context) && _instance.save();
         }
 
-
-        String ip = _instance.getDeviceIpAddress();
-        Log.d(CLASSTAG, "IP addy : " + ip);
-        return success;
-    }
-
-
-    public static boolean create(Context context, boolean deepReset) {
-
-        if (null != _instance) {
-            Log.e(CLASSTAG, "create() : called but we already have an instance. Trying to release prior instance");
-            _instance = null;
-        }
-
-        // order matters here ! first get a keystore started for all that must follow
-        // NOTE : MUST BE DONE TO PREVENT SINGLETON LOCKOUT WITH STATIC ctors
-
-        _instance = new AppState();
-        Qlassified keyStore = Qlassified.Service;
-        keyStore.setStorageService(new QlassifiedSharedPreferencesService(context, kSecureStoreName));
-        keyStore.start(context);
-        _instance.keyStore = keyStore;
-
-        SecureCredentials.setKeyStore(keyStore);
-
-        boolean success;
-        //noinspection ConstantConditions
-        if (deepReset) {
-            success = _instance.initOnDevice(context) && _instance.save(context);
-        } else if (!FileUtils.appStateExistsOnDevice()) {
-            success = _instance.initOnDevice(context) && _instance.save(context);
-        } else {
-            success = _instance.loadFromDevice(context);
-        }
 
         String ip = _instance.getDeviceIpAddress();
         Log.d(CLASSTAG, "IP addy : " + ip);
@@ -193,7 +161,8 @@ public class AppState {
     @GSONexcludeInbound
     public UserModel userModel;
 
-    public void reset(Context context) {
+    public void reset() {
+        Context context = EHRLibRuntime.getInstance().getContext();
 
         AppState as = getInstance();
 
@@ -216,8 +185,7 @@ public class AppState {
 
         as.secureCredentials.reset();
 
-        as.save(context);
-
+        as.save();
     }
 
     private AppState() {
@@ -423,7 +391,7 @@ public class AppState {
             success = loadSecureCreadentials();
             if (!success) {
                 Log.e(getLogTAG(), "Reloaded appState, but there were no credentials, resetting.");
-                this.reset(context);
+                this.reset();
                 this.secureCredentials.reset();
 
             }
@@ -438,11 +406,13 @@ public class AppState {
         return !file.exists() || file.delete();
     }
 
-    public static boolean saveOnDevice(Context context) {
-        return getInstance().getUserModel().save(context) && getInstance().getNotificationModel().save() && getInstance().save(context);
+    public static boolean saveOnDevice() {
+        Context context = EHRLibRuntime.getInstance().getContext();
+        return getInstance().getUserModel().save(context) && getInstance().getNotificationModel().save() && getInstance().save();
     }
 
-    public boolean save(Context context) {
+    public boolean save() {
+        Context context = EHRLibRuntime.getInstance().getContext();
         AppState as  = this;
         boolean  ret = false;
         File     fd  = context.getFilesDir();
@@ -517,7 +487,7 @@ public class AppState {
 
             server = EHRLibRuntime.getCurrentServer();
             OAMPserver = EHRLibRuntime.getOAMPserver();
-            success = saveOnDevice(context);
+            success = saveOnDevice();
         }
 
         return success;

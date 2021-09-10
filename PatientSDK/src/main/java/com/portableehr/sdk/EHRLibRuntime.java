@@ -22,9 +22,11 @@ import com.portableehr.sdk.network.ehrApi.EHRApiServer;
 import com.portableehr.sdk.network.ehrApi.EHRServerRequest;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Properties;
 
 
 @SuppressWarnings("unused")
@@ -35,18 +37,13 @@ public class EHRLibRuntime {
     }
 
     //region App constants
-    public static String    kAppAlias     = "patient.android";
-    public static String    kAppGuid      = "27991c67-79db-4a71-a69d-9ef8737940b7";
-    public static IBVersion kAppVersion   = new IBVersion("1.1.0");
     public static String    kModulePrefix = "pehr.sdk.android";
     //endregion
 
     //region Precanned accounts : Guest
     public static final String kGuestApiKey   = "K7ICfFOwS3ELdHfAzWBhPt";
     public static final String kGuestUserGuid = "67b1c035-9d12-4bd6-9f94-df75182da183";
-
     //endregion
-
 
     private             Date   mStartTime;
     public static final String kEventUnauthorized         = "kEventUnauthorized";
@@ -59,8 +56,6 @@ public class EHRLibRuntime {
     @SuppressWarnings("deprecation")
     public static       Date   kEpochStart                = new Date("1 jan 1970");
 
-    private static       String                        _stackKey;
-    private static final HashMap<String, EHRApiServer> _stackApiHosts;
     private              Context                       context;
     private              IBDeviceInfo                  deviceInfo;
     private              EHRApiServer                  server;
@@ -68,14 +63,14 @@ public class EHRLibRuntime {
     private              IBAppInfo                     appInfo;
 
     public RestAPI api;
-    static Object  instance;
+    private static EHRLibRuntime  instance;
 
     public static EHRLibRuntime getInstance() {
         if (null == instance) {
             try {
                 instance = new EHRLibRuntime();
-                ((EHRLibRuntime) instance).mStartTime = new Date();
-                ((EHRLibRuntime) instance).api = new RestAPI();
+                instance.mStartTime = new Date();
+                instance.api = new RestAPI();
             } catch (Exception e) {
                 Log.e(CLASSTAG, "You have not properly set the runtime context.");
                 e.printStackTrace();
@@ -84,7 +79,7 @@ public class EHRLibRuntime {
         return (EHRLibRuntime) instance;
     }
 
-    public EHRLibRuntime() {
+    private EHRLibRuntime() {
         String dl = Locale.getDefault().getISO3Language();
         if (dl.equals("eng")) {
             dl = "en";
@@ -96,111 +91,92 @@ public class EHRLibRuntime {
         this.setDeviceLanguage(dl);
     }
 
-
-    public static void initialize(String appAlias, String appGuid, IBVersion appVersion) {
-        initialize(kModulePrefix, appAlias, appGuid, appVersion);
+    public void initialize(Context context, String appGuid, String appAlias, String appVersion, String stackKey) {
+        this.context = context;
+        PehrSDKConfiguration.getInstance(appGuid, appAlias, appVersion, stackKey);
     }
 
-    public static void initialize(String module, String appAlias, String appGuid, IBVersion appVersion) {
-        kModulePrefix = module;
-        setAppAlias(appAlias);
-        setAppVersion(appVersion);
-        setAppGuid(appGuid);
-    }
-
-    private static void setAppAlias(String appAlias) {
-        kAppAlias = appAlias;
-    }
-
-    private static void setAppGuid(String appGuid) {
-        kAppGuid = appGuid;
-    }
-
-    private static void setAppVersion(IBVersion appVersion) {
-        kAppVersion = appVersion;
-    }
-
-
-    static {
-
-        Log.d(EHRLibRuntime.class.getName(), "In static");
-
-        EHRApiServer.productionApiServer();
-        _stackApiHosts = new HashMap<>();
-        _stackApiHosts.put("CA.prod", EHRApiServer.productionApiServer());
-        _stackApiHosts.put("CA.staging", EHRApiServer.stagingApiServer());
-        _stackApiHosts.put("CA.devhome", EHRApiServer.create("http", "10.0.1.22", 8080));
-        _stackApiHosts.put("CA.devoffice", EHRApiServer.create("http", "192.168.32.32", 8080));
-        _stackApiHosts.put("CA.partner", EHRApiServer.partnerApiServer());
-        //***************************************************************************************
-        // *   CA.prod                                                                          *
-        //***************************************************************************************
-
-//        setStackKey("CA.devhome");
-        setStackKey("CA.partner");
-    }
-
-    public static String getStackKey() {
-        return _stackKey;
+    public void initialize(Context context, Properties properties) {
+        this.context = context;
+        PehrSDKConfiguration.getInstance(properties);
     }
 
     public static EHRApiServer getCurrentServer() {
-        return _stackApiHosts.get(_stackKey);
+        return EHRLibRuntime.getServerForStackKey(PehrSDKConfiguration.getInstance().getAppStackKey());
     }
 
     public static EHRApiServer getServerForStackKey(String stackKey) {
-        return _stackApiHosts.get(stackKey);
+        EHRApiServer api = new EHRApiServer();
+        switch (stackKey) {
+            case "CA.prod":
+                api.setServerDNSname("api.portableehr.ca");
+                api.setScheme("https");
+                api.setPort(443);
+                break;
+            case "CA.partner":
+                api.setServerDNSname("api.portableehr.io");
+                api.setScheme("https");
+                api.setPort(443);
+                break;
+            case "CA.staging":
+                api.setServerDNSname("api.portableehr.net");
+                api.setScheme("https");
+                api.setPort(443);
+                break;
+            case "CA.dev":
+                api.setServerDNSname("api.portableehr.dev");
+                api.setScheme("https");
+                api.setPort(443);
+                break;
+            case "CA.local":
+                api.setServerDNSname("api.portableehr.local");
+                api.setScheme("http");
+                api.setPort(8080);
+                break;
+            default:
+                Log.e(EHRLibRuntime.class.getName(), String.format("*** Unknown stack key [%s] when fetching API server.", stackKey));
+        }
+
+        return api;
     }
 
     public static EHRApiServer getOAMPserver() {
-        return EHRLibRuntime.getOAMPserver(_stackKey);
+        return EHRLibRuntime.getOAMPserver(PehrSDKConfiguration.getInstance().getAppStackKey());
     }
 
     public static EHRApiServer getOAMPserver(String stackKey) {
         EHRApiServer oamp = new EHRApiServer();
         switch (stackKey) {
-            case "CA.devhome":
-                oamp.setServerDNSname("10.0.1.22");
-                oamp.setScheme("http");
-                oamp.setPort(80);
-                break;
-            case "CA.devoffice":
-                oamp.setServerDNSname("192.168.32.32");
-                oamp.setScheme("http");
-                oamp.setPort(80);
-                break;
-            case "CA.staging":
-                oamp.setServerDNSname("oamp.portableehr.net");
-                oamp.setScheme("https");
-                oamp.setPort(443);
-                break;
             case "CA.prod":
                 oamp.setServerDNSname("oamp.portableehr.ca");
                 oamp.setScheme("https");
                 oamp.setPort(443);
                 break;
             case "CA.partner":
-                oamp.setServerDNSname("api.portableehr.io");
+                oamp.setServerDNSname("oamp.portableehr.io");
                 oamp.setScheme("https");
                 oamp.setPort(443);
                 break;
+            case "CA.staging":
+                oamp.setServerDNSname("oamp.portableehr.net");
+                oamp.setScheme("https");
+                oamp.setPort(443);
+                break;
+            case "CA.dev":
+                oamp.setServerDNSname("oamp.portableehr.dev");
+                oamp.setScheme("https");
+                oamp.setPort(443);
+                break;
+            case "CA.local":
+                oamp.setServerDNSname("oamp.portableehr.local");
+                oamp.setScheme("http");
+                oamp.setPort(80);
+                break;
             default:
-                Log.e(EHRLibRuntime.class.getName(), String.format("*** Unknown stack key [%s] when fetching OAMP server.", _stackKey));
+                Log.e(EHRLibRuntime.class.getName(), String.format("*** Unknown stack key [%s] when fetching OAMP server.", stackKey));
         }
 
         return oamp;
-    }
-
-    public static void setStackKey(@SuppressWarnings("SameParameterValue") String stackKey) {
-        EHRApiServer _host = _stackApiHosts.get(stackKey);
-        if (_host != null) {
-            Log.d(EHRLibRuntime.class.getName(), String.format("Set stack key to [%s]", stackKey));
-            _stackKey = stackKey;
-            getInstance().setServer(getCurrentServer());
-        } else {
-            Log.e(EHRLibRuntime.class.getName(), String.format("Unknown host when stating stack key to [%s]", stackKey));
-        }
-
     }
 
     public static String getCountableInstanceLogLabel(int instanceNumber, int numberOfInstances) {
@@ -215,10 +191,6 @@ public class EHRLibRuntime {
 
     public Context getContext() {
         return context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     public UserModel getUserModel() {
@@ -284,8 +256,6 @@ public class EHRLibRuntime {
                 EHRLibRuntime.getInstance().getDeviceLanguage(),
                 route, command
         );
-        request.setAppAlias(EHRLibRuntime.kAppAlias);
-        request.setAppVersion(EHRLibRuntime.kAppVersion);
         return request;
     }
 

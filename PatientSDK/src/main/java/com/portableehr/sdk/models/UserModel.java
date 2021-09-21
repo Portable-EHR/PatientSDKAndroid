@@ -1,5 +1,6 @@
 package com.portableehr.sdk.models;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -266,6 +267,18 @@ public class UserModel extends AbstractPollingModel {
     //** persist  (public)                                                                       **/
     //*********************************************************************************************/
 
+    public static boolean deleteFromDevice() {
+        String filePath = getInstance().getFQN();
+        File   file     = new File(filePath);
+        return file.delete();
+    }
+
+    public static boolean resetOnDevice() {
+        getInstance().user = IBUser.guest();
+        getInstance().isEULAread = false;
+        getInstance().isVaultWarningRead = false;
+        return getInstance().save();
+    }
 
     //*********************************************************************************************/
     //** persist  (private)                                                                      **/

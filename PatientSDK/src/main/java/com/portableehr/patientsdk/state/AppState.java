@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.portableehr.patientsdk.models.SecureCredentials;
-import com.portableehr.patientsdk.models.UserModel;
+import com.portableehr.sdk.models.UserModel;
 import com.portableehr.sdk.PehrSDKConfiguration;
 import com.portableehr.sdk.models.ModelRefreshPolicyEnum;
 import com.portableehr.sdk.models.notification.NotificationModel;
@@ -172,8 +172,8 @@ public class AppState {
         as.enforcePrivacy = false;
 //        app.setPrivacyCompromised(true);
         as.userModel.setPollingPolicy(ModelRefreshPolicyEnum.NONE);
-        UserModel.resetOnDevice(context);
-        as.userModel = UserModel.getInstance(context);
+        UserModel.resetOnDevice();
+        as.userModel = UserModel.getInstance();
         as.userModel.setPollingPolicy(ModelRefreshPolicyEnum.NONE);
 
         as.getNotificationModel().setPollingPolicy(ModelRefreshPolicyEnum.NONE);
@@ -383,7 +383,7 @@ public class AppState {
             this.deviceInfo = old.deviceInfo;
             this.deviceLanguage = old.deviceLanguage;
             this.enforcePrivacy = old.enforcePrivacy;
-            this.userModel = UserModel.getInstance(context);
+            this.userModel = UserModel.getInstance();
             this.notificationModel = NotificationModel.getInstance();
             this.serviceModel = ServiceModel.getInstance();
             this.timeOfLastSync = kEpochStart;
@@ -408,7 +408,7 @@ public class AppState {
 
     public static boolean saveOnDevice() {
         Context context = EHRLibRuntime.getInstance().getContext();
-        return getInstance().getUserModel().save(context) && getInstance().getNotificationModel().save() && getInstance().save();
+        return getInstance().getUserModel().save() && getInstance().getNotificationModel().save() && getInstance().save();
     }
 
     public boolean save() {
@@ -477,11 +477,11 @@ public class AppState {
                 dl = "en";
             }
             setDeviceLanguage(dl);
-            UserModel.deleteFromDevice(context);
+            UserModel.deleteFromDevice();
             NotificationModel.resetOnDevice();
             serviceModel = ServiceModel.getInstance();
             ServiceModel.resetOnDevice();
-            userModel = UserModel.getInstance(context);
+            userModel = UserModel.getInstance();
             notificationModel = NotificationModel.getInstance();
             setTimeOfLastSync(kEpochStart);
 

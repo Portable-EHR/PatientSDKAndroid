@@ -1,5 +1,6 @@
 package com.portableehr.sdk.models;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -70,6 +71,21 @@ public class UserModel extends AbstractPollingModel {
             cancelPoll();
             setPollingPolicy(ModelRefreshPolicyEnum.ADAPTATIVE);
         }
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean deleteFromDevice(Context context) {
+        String filePath = getInstance().getFQN();
+        File   file     = new File(filePath);
+        return file.delete();
+    }
+
+    @SuppressWarnings("UnusedReturnValue")
+    public static boolean resetOnDevice() {
+        getInstance().user = IBUser.guest();
+        getInstance().isEULAread = false;
+        getInstance().isVaultWarningRead = false;
+        return getInstance().save();
     }
 
     public static UserModel loadFromDevice(String userGuid) {

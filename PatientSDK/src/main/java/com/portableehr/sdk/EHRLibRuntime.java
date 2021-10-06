@@ -94,15 +94,14 @@ public class EHRLibRuntime {
     public void initialize(Context context, String appGuid, String appAlias, String appVersion, String stackKey) {
         this.context = context;
         PehrSDKConfiguration.getInstance(appGuid, appAlias, appVersion, stackKey);
-
-        setServer(getServerForStackKey(stackKey));
+        this.setServer(getCurrentServer());
         setDeviceInfo(IBDeviceInfo.initFromDevice(context));
     }
 
     public void initialize(Context context, Properties properties) {
         this.context = context;
         PehrSDKConfiguration.getInstance(properties);
-        setServer(getServerForStackKey(PehrSDKConfiguration.getInstance().getAppStackKey()));
+        this.setServer(getCurrentServer());
         setDeviceInfo(IBDeviceInfo.initFromDevice(context));
     }
 

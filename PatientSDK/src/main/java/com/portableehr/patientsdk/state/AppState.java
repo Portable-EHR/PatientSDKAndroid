@@ -9,9 +9,9 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.portableehr.patientsdk.models.SecureCredentials;
+import com.portableehr.sdk.models.UserModel;
 import com.portableehr.sdk.PehrSDKConfiguration;
 import com.portableehr.sdk.models.ModelRefreshPolicyEnum;
-import com.portableehr.sdk.models.UserModel;
 import com.portableehr.sdk.models.notification.NotificationModel;
 import com.portableehr.sdk.models.service.ServiceModel;
 import com.portableehr.sdk.network.NAO.inbound.IBAppInfo;
@@ -476,7 +476,7 @@ public class AppState {
                 dl = "en";
             }
             setDeviceLanguage(dl);
-            UserModel.deleteFromDevice(context);
+            UserModel.deleteFromDevice();
             NotificationModel.resetOnDevice();
             serviceModel = ServiceModel.getInstance();
             ServiceModel.resetOnDevice();

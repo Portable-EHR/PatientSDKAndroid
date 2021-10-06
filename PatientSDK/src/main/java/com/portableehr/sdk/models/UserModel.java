@@ -74,7 +74,7 @@ public class UserModel extends AbstractPollingModel {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static boolean deleteFromDevice(Context context) {
+    public static boolean deleteFromDevice() {
         String filePath = getInstance().getFQN();
         File   file     = new File(filePath);
         return file.delete();
@@ -281,7 +281,6 @@ public class UserModel extends AbstractPollingModel {
     //*********************************************************************************************/
     //** persist  (public)                                                                       **/
     //*********************************************************************************************/
-
 
     //*********************************************************************************************/
     //** persist  (private)                                                                      **/

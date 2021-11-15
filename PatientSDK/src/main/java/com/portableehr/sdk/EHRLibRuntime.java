@@ -46,6 +46,7 @@ public class EHRLibRuntime {
     //endregion
 
     private             Date   mStartTime;
+    public static final String kEventAppUpdateAvailable   = "kEventAppUpdateAvailable";
     public static final String kEventUnauthorized         = "kEventUnauthorized";
     public static final String kEventMaintenance          = "kEventMaintenance";
     public static final String kEventNotificationsUpdated = "kEventNotificationsUpdated";

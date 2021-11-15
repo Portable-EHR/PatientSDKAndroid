@@ -1,5 +1,11 @@
 package com.portableehr.patientsdk.models;
 
+import static com.portableehr.patientsdk.utils.PatientRuntimeConstants.kDefaultClassCountable;
+import static com.portableehr.sdk.EHRLibRuntime.kGuestApiKey;
+import static com.portableehr.sdk.EHRLibRuntime.kGuestUserGuid;
+import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
+import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
+
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -14,12 +20,6 @@ import com.q42.qlassified.Qlassified;
 import java.io.Serializable;
 import java.util.Date;
 
-import static com.portableehr.patientsdk.utils.PatientRuntimeConstants.kDefaultClassCountable;
-import static com.portableehr.sdk.EHRLibRuntime.kGuestApiKey;
-import static com.portableehr.sdk.EHRLibRuntime.kGuestUserGuid;
-import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
-import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
-
 public class SecureCredentials implements Serializable {
 
     private static Qlassified keyStore;
@@ -30,23 +30,25 @@ public class SecureCredentials implements Serializable {
 
     public class UserCredentials {
 
-        private static final String kDeviceGuidKey        = "kDeviceGuidKey";
-        private static final String kUserGuidKey          = "kUserGuidKey";
-        private static final String kUserApiKeyKey        = "kUserApiKeyKey";
-        private static final String kEulaGuidKey          = "kEulaGuidKey";
-        private static final String kEulaVersionKey       = "kEulaVersionKey";
-        private static final String kEulaDateSeenKey      = "kEulaDateSeenKey";
+        private static final String kDeviceGuidKey = "kDeviceGuidKey";
+        private static final String kUserGuidKey = "kUserGuidKey";
+        private static final String kUserApiKeyKey = "kUserApiKeyKey";
+        private static final String kEulaGuidKey = "kEulaGuidKey";
+        private static final String kEulaVersionKey = "kEulaVersionKey";
+        private static final String kEulaDateSeenKey = "kEulaDateSeenKey";
         private static final String kEulaDateConsentedKey = "kEulaDateConsentedKey";
-        private static final String kNullString           = "kNullString";
-        private static final long   kNullDate             = 0;
+        private static final String kNullString = "kNullString";
+        private static final String kResearchConsentDismissedKey = "kResearchConsentDismissedKey";
+        private static final long kNullDate = 0;
 
-        private String    deviceGuid;
-        private String    userGuid;
-        private String    userApiKey;
+        private String deviceGuid;
+        private String userGuid;
+        private String userApiKey;
         private IBVersion eulaVersion;
-        private Date      eulaDateSeen;
-        private Date      eulaDateConsented;
-        private String    eulaGuid;
+        private Date eulaDateSeen;
+        private Date eulaDateConsented;
+        private String eulaGuid;
+        private boolean researchConsentDismissedKey = false;
 
 
         /**
@@ -104,6 +106,15 @@ public class SecureCredentials implements Serializable {
             saveDate(kEulaDateConsentedKey, eulaDateConsented);
         }
 
+        public boolean getResearchConsentDismissedKey() {
+            return researchConsentDismissedKey;
+        }
+
+        public void setResearchConsentDismissedKey(boolean value) {
+            this.researchConsentDismissedKey = value;
+            saveBoolean(kResearchConsentDismissedKey, researchConsentDismissedKey);
+        }
+
         public String getEulaGuid() {
             return eulaGuid;
         }
@@ -158,6 +169,7 @@ public class SecureCredentials implements Serializable {
                 this.eulaDateConsented = loadDate(kEulaDateConsentedKey);
                 this.userGuid = loadString(kUserGuidKey);
                 this.userApiKey = loadString(kUserApiKeyKey);
+                this.researchConsentDismissedKey = loadBoolean(kResearchConsentDismissedKey);
 
             } catch (Exception e) {
                 Log.wtf(getLogTAG(), "loadFromKeyStore:  An error occured when saving secure credentials", e);
@@ -179,6 +191,7 @@ public class SecureCredentials implements Serializable {
                 saveString(kUserGuidKey, this.userGuid);
                 saveString(kUserApiKeyKey, this.userApiKey);
                 saveString(kDeviceGuidKey, this.deviceGuid);
+                saveBoolean(kResearchConsentDismissedKey, this.researchConsentDismissedKey);
             } catch (Exception e) {
                 Log.d(getLogTAG(), "An error occured when saving secure credentials");
                 e.printStackTrace();
@@ -198,9 +211,27 @@ public class SecureCredentials implements Serializable {
 
         private String loadString(String key) {
             String strawman = keyStore.getString(key);
-            String result   = null;
+            String result = null;
             if (null != strawman && !strawman.contentEquals(kNullString)) {
                 result = strawman;
+            }
+            return result;
+        }
+
+        //region Kestore save/load by key
+        private void saveBoolean(String key, @Nullable Boolean valueToSave) {
+            if (valueToSave != null) {
+                keyStore.put(key, valueToSave);
+            } else {
+                keyStore.put(key, false);
+            }
+        }
+
+        private Boolean loadBoolean(String key) {
+            Boolean ret = keyStore.getBoolean(key);
+            Boolean result = false;
+            if (null != ret) {
+                result = ret;
             }
             return result;
         }
@@ -215,7 +246,7 @@ public class SecureCredentials implements Serializable {
 
         private Date loadDate(String key) {
             Long strawman = keyStore.getLong(key);
-            Date result   = null;
+            Date result = null;
             if (strawman != kNullDate) {
                 result = new Date(strawman);
             }
@@ -256,20 +287,20 @@ public class SecureCredentials implements Serializable {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + SecureCredentials.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + SecureCredentials.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private              boolean classCountable = kDefaultClassCountable;
+    private boolean classCountable = kDefaultClassCountable;
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-            numberOfInstances--;
+        numberOfInstances--;
         if (numberOfInstances < 0) {
             Log.e(getLogTAG(), "*** You did not call onNew in your ctor(s)");
         }
@@ -280,9 +311,9 @@ public class SecureCredentials implements Serializable {
 
     protected void onNew() {
         TAG = CLASSTAG;
-            numberOfInstances++;
-            lifeTimeInstances++;
-            instanceNumber = lifeTimeInstances;
+        numberOfInstances++;
+        lifeTimeInstances++;
+        instanceNumber = lifeTimeInstances;
         if (classCountable) {
             // Log.v(getLogTAG(), "onNew ");
         }
@@ -308,16 +339,16 @@ public class SecureCredentials implements Serializable {
 
 
     public String asJson() {
-        GsonBuilder builder        = standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static SecureCredentials fromJson(String json) {
-        GsonBuilder       builder          = standardBuilder();
-        Gson              jsonDeserializer = builder.create();
-        SecureCredentials theObject        = jsonDeserializer.fromJson(json, SecureCredentials.class);
+        GsonBuilder builder = standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        SecureCredentials theObject = jsonDeserializer.fromJson(json, SecureCredentials.class);
         return theObject;
     }
 

@@ -1,10 +1,12 @@
 package com.portableehr.sdk.models;
 
-import android.content.Context;
+import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.portableehr.patientsdk.state.AppState;
 import com.portableehr.sdk.EHRLibRuntime;
 import com.portableehr.sdk.network.NAO.inbound.IBDispensaryStaffUser;
 import com.portableehr.sdk.network.NAO.inbound.IBUser;
@@ -20,8 +22,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
-
 
 /**
  * Created by : yvesleborg
@@ -33,9 +33,9 @@ import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
 public class UserModel extends AbstractPollingModel {
 
-    public static  String NEW_PASSWORD       = "change!";
-    private static long   mShortPollInterval = 15 * 60;          // 15 minutes
-    private static long   mLongPollInterval  = 12 * 60 * 60;     // 12 hours
+    public static String NEW_PASSWORD = "change!";
+    private static long mShortPollInterval = 15 * 60;          // 15 minutes
+    private static long mLongPollInterval = 12 * 60 * 60;     // 12 hours
 
     //*********************************************************************************************/
     //** ctors and shit                                                                          **/
@@ -49,10 +49,16 @@ public class UserModel extends AbstractPollingModel {
     }
 
     private static UserModel _instance;
-    public static UserModel getInstance(){
-        if(null==UserModel._instance) {
-            UserModel._instance=new UserModel();
-            _instance.setUser(IBUser.guest());
+
+    public static UserModel getInstance() {
+        if (null == UserModel._instance) {
+            UserModel._instance = new UserModel();
+            String guid = AppState.getInstance().getSecureCredentials().getUserCredentials().getUserGuid();
+            if (guid != null && !guid.equals("")) {
+                _instance.setUser(loadFromDevice(guid).getUser());
+            } else {
+                _instance.setUser(IBUser.guest());
+            }
         }
         return _instance;
     }
@@ -63,8 +69,8 @@ public class UserModel extends AbstractPollingModel {
     }
 
     public void setUser(IBUser user) {
-        _instance.user=user;
-        if(user==IBUser.guest()) {
+        _instance.user = user;
+        if (user == IBUser.guest()) {
             cancelPoll();
             setPollingPolicy(ModelRefreshPolicyEnum.NONE);
         } else {
@@ -76,7 +82,7 @@ public class UserModel extends AbstractPollingModel {
     @SuppressWarnings("UnusedReturnValue")
     public static boolean deleteFromDevice() {
         String filePath = getInstance().getFQN();
-        File   file     = new File(filePath);
+        File file = new File(filePath);
         return file.delete();
     }
 
@@ -89,11 +95,11 @@ public class UserModel extends AbstractPollingModel {
     }
 
     public static UserModel loadFromDevice(String userGuid) {
-        UserModel um        = null;
-        String    folderFqn = FileUtils.pathOfUserDirectory(userGuid);
+        UserModel um = null;
+        String folderFqn = FileUtils.pathOfUserDirectory(userGuid);
         if (folderFqn != null) {
             String jsonFqn = getFQN(userGuid);
-            String json    = FileUtils.readJsonFromFilePath(jsonFqn);
+            String json = FileUtils.readJsonFromFilePath(jsonFqn);
             if (json != null) {
                 um = UserModel.fromJson(json);
             } else {
@@ -163,7 +169,7 @@ public class UserModel extends AbstractPollingModel {
 
     private static final String fileName = "userModel.json";
 
-    private IBUser  user;
+    private IBUser user;
     private boolean isVaultWarningRead;
     private boolean isEULAread;
 
@@ -288,12 +294,12 @@ public class UserModel extends AbstractPollingModel {
 
 
     public boolean save() {
-        UserModel um  = this;
-        boolean   ret = false;
-        File      fd  = EHRLibRuntime.getInstance().getContext().getFilesDir();
+        UserModel um = this;
+        boolean ret = false;
+        File fd = EHRLibRuntime.getInstance().getContext().getFilesDir();
         // in the clinic app, we never save the apiKey (it is fetched upon login)
         String apiKey = this.user.getApiKey();
-        this.user.setApiKey(null);
+//        this.user.setApiKey(null);
         if (null == fd) {
             Log.e(getLogTAG(), "Unable to get files dir from ApplicationExt");
         } else {
@@ -317,7 +323,7 @@ public class UserModel extends AbstractPollingModel {
                 Log.e(getLogTAG(), "getFilesDIr returned a file !!!");
             }
         }
-        this.user.setApiKey(apiKey);
+//        this.user.setApiKey(apiKey);
         return ret;
     }
 
@@ -333,8 +339,8 @@ public class UserModel extends AbstractPollingModel {
 
     private static UserModel initOnDevice(IBUser user) {
 
-        UserModel um      = new UserModel(user);
-        boolean   success = um.save();
+        UserModel um = new UserModel(user);
+        boolean success = um.save();
         if (!success) {
             um = null;
             Log.e(CLASSTAG, "Unable to write the userModel, device not inited properly.");
@@ -367,7 +373,7 @@ public class UserModel extends AbstractPollingModel {
         }
 
         String filePath = null;
-        File   fd       = EHRLibRuntime.getInstance().getContext().getFilesDir();
+        File fd = EHRLibRuntime.getInstance().getContext().getFilesDir();
         if (null == fd) {
             Log.e(CLASSTAG, "getFolderFQP : Unable to get files dir from ApplicationExt, bailing out.");
         } else {
@@ -383,15 +389,15 @@ public class UserModel extends AbstractPollingModel {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + UserModel.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + UserModel.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = false;
+    private static boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {
@@ -434,16 +440,16 @@ public class UserModel extends AbstractPollingModel {
 
 
     public String asJson() {
-        GsonBuilder builder        = GsonFactory.standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static UserModel fromJson(String json) {
-        GsonBuilder builder          = GsonFactory.standardBuilder();
-        Gson        jsonDeserializer = builder.create();
-        UserModel   theObject        = jsonDeserializer.fromJson(json, UserModel.class);
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        UserModel theObject = jsonDeserializer.fromJson(json, UserModel.class);
         return theObject;
     }
 

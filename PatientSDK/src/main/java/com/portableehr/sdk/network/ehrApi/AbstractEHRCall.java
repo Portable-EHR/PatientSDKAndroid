@@ -225,8 +225,15 @@ public abstract class AbstractEHRCall implements ICaller {
                         this.getCompletionHandler().handleError(this);
                     } else if (requestStatus.getStatus().contentEquals("APP_VERSION")) {
                         Log.e(TAG, "Server requires a application update from the appstore.");
-                        cancel();
-                        this.getCompletionHandler().handleCancel(this);
+//                        cancel();
+//                        this.getCompletionHandler().handleCancel(this);
+                        Log.e(TAG, "*****************************************************");
+                        Log.e(TAG, "** Telling listeners about APP_VERSION event    **");
+                        Log.e(TAG, "*****************************************************");
+                        Intent teller = new Intent(EHRLibRuntime.kEventAppUpdateAvailable);
+                        teller.putExtra("auth", EHRLibRuntime.kEventAppUpdateAvailable);
+                        LocalBroadcastManager.getInstance(EHRLibRuntime.getInstance().getContext()).sendBroadcast(teller);
+                        this.getCompletionHandler().handleError(this);
                     } else {
                         Log.e(TAG, "host is " + this.serverRequest.getServer().getServerDNSname());
                         Log.d(TAG, "Got [" + requestStatus.getStatus() + "] status from server.");

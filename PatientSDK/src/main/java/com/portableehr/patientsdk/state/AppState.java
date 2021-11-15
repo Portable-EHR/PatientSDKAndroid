@@ -1,5 +1,11 @@
 package com.portableehr.patientsdk.state;
 
+import static com.portableehr.patientsdk.utils.PatientRuntimeConstants.kDefaultClassCountable;
+import static com.portableehr.patientsdk.utils.PatientRuntimeConstants.kSecureStoreName;
+import static com.portableehr.sdk.EHRLibRuntime.kEpochStart;
+import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
+import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -9,12 +15,14 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.portableehr.patientsdk.models.SecureCredentials;
-import com.portableehr.sdk.models.UserModel;
+import com.portableehr.sdk.EHRLibRuntime;
 import com.portableehr.sdk.PehrSDKConfiguration;
 import com.portableehr.sdk.models.ModelRefreshPolicyEnum;
+import com.portableehr.sdk.models.UserModel;
 import com.portableehr.sdk.models.notification.NotificationModel;
 import com.portableehr.sdk.models.service.ServiceModel;
 import com.portableehr.sdk.network.NAO.inbound.IBAppInfo;
+import com.portableehr.sdk.network.NAO.inbound.IBConsent;
 import com.portableehr.sdk.network.NAO.inbound.IBDeviceInfo;
 import com.portableehr.sdk.network.NAO.inbound.IBPatient;
 import com.portableehr.sdk.network.NAO.inbound.IBUser;
@@ -25,7 +33,6 @@ import com.portableehr.sdk.network.gson.GsonFactory;
 import com.portableehr.sdk.util.FileUtils;
 import com.q42.qlassified.Qlassified;
 import com.q42.qlassified.Storage.QlassifiedSharedPreferencesService;
-import com.portableehr.sdk.EHRLibRuntime;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,20 +41,15 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-
-import static com.portableehr.patientsdk.utils.PatientRuntimeConstants.kDefaultClassCountable;
-import static com.portableehr.patientsdk.utils.PatientRuntimeConstants.kSecureStoreName;
-import static com.portableehr.sdk.EHRLibRuntime.kEpochStart;
-import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
-import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
 
 public class AppState {
 
 
-    private static final String   fileName  = "appState.json";
-    private static       AppState _instance = null;
-    public static        int      activityStackSize;
+    private static final String fileName = "appState.json";
+    private static AppState _instance = null;
+    public static int activityStackSize;
 
 
     @GSONexcludeOutbound
@@ -109,6 +111,15 @@ public class AppState {
                 }
             }
 
+            if (_instance.deviceInfo != null
+                    && _instance.getSecureCredentials() != null
+                    && _instance.getSecureCredentials().getUserCredentials() != null) {
+                String guid = _instance.getSecureCredentials().getUserCredentials().getDeviceGuid();
+                _instance.deviceInfo.setDeviceGuid(guid);
+                if (EHRLibRuntime.getInstance().getDeviceInfo() != null) {
+                    EHRLibRuntime.getInstance().getDeviceInfo().setDeviceGuid(guid);
+                }
+            }
         } else {
             success = _instance.initOnDevice(context) && _instance.save();
         }
@@ -124,17 +135,19 @@ public class AppState {
         return _instance;
     }
 
-    private Date         timeOfLastSync;
-    private String       language;
+    private Date timeOfLastSync;
+    private String language;
     private IBDeviceInfo deviceInfo;
-    private IBPatient    patient;
-    private String       deviceLanguage;
+    private IBPatient patient;
+    private String deviceLanguage;
     private EHRApiServer server;
-    private boolean      enforcePrivacy;
-    private boolean      userHasSeenEULAwarning;
-    private boolean      userHasSeenVaultWarning;
-    private boolean      userHasReadEULA;
-    private IBAppInfo    appInfo;
+    private boolean enforcePrivacy;
+    private boolean userHasSeenEULAwarning;
+    private boolean userHasSeenVaultWarning;
+    private boolean userHasReadEULA;
+    private IBAppInfo appInfo;
+    private List<IBConsent> consents;
+    private IBConsent currentConsent;
 
 
     @GSONexcludeOutbound
@@ -230,6 +243,13 @@ public class AppState {
         return true;
     }
 
+    public boolean isResearchConsentDismissed() {
+        if (null == secureCredentials || null == secureCredentials.getUserCredentials()) {
+            return false;
+        }
+        return secureCredentials.getUserCredentials().getResearchConsentDismissedKey();
+    }
+
     public Date getTimeOfLastSync() {
         return timeOfLastSync;
     }
@@ -267,6 +287,22 @@ public class AppState {
         } else if (!appInfo.getEula().getVersion().toString().contentEquals(secureCredentials.getUserCredentials().getEulaVersion().toString())) {
             resetCredentials(appInfo);
         }
+    }
+
+    public List<IBConsent> getConsents() {
+        return consents;
+    }
+
+    public void setConsents(List<IBConsent> consents) {
+        this.consents = consents;
+    }
+
+    public IBConsent getCurrentConsent() {
+        return currentConsent;
+    }
+
+    public void setCurrentConsent(IBConsent consent) {
+        this.currentConsent = consent;
     }
 
     private void resetCredentials(IBAppInfo appInfo) {
@@ -362,11 +398,11 @@ public class AppState {
     public boolean loadFromDevice() {
 
         boolean success = false;
-        String  json    = FileUtils.readAppStateJson();
+        String json = FileUtils.readAppStateJson();
         if (json != null) {
-            GsonBuilder b    = standardBuilder();
-            Gson        gson = b.create();
-            AppState    old  = gson.fromJson(json, AppState.class);
+            GsonBuilder b = standardBuilder();
+            Gson gson = b.create();
+            AppState old = gson.fromJson(json, AppState.class);
 
             if (old.getStackKey() == null) {
                 // this should take care of devices that were activated
@@ -383,7 +419,6 @@ public class AppState {
             this.deviceInfo = old.deviceInfo;
             this.deviceLanguage = old.deviceLanguage;
             this.enforcePrivacy = old.enforcePrivacy;
-            this.userModel = UserModel.getInstance();
             this.notificationModel = NotificationModel.getInstance();
             this.serviceModel = ServiceModel.getInstance();
             this.timeOfLastSync = kEpochStart;
@@ -393,8 +428,8 @@ public class AppState {
                 Log.e(getLogTAG(), "Reloaded appState, but there were no credentials, resetting.");
                 this.reset();
                 this.secureCredentials.reset();
-
             }
+            this.userModel = UserModel.getInstance();
         }
         return success;
     }
@@ -402,7 +437,7 @@ public class AppState {
     private boolean deleteFromDevice(Context context) {
 
         String filePath = getFQN(context);
-        File   file     = new File(filePath);
+        File file = new File(filePath);
         return !file.exists() || file.delete();
     }
 
@@ -412,9 +447,9 @@ public class AppState {
 
     public boolean save() {
         Context context = EHRLibRuntime.getInstance().getContext();
-        AppState as  = this;
-        boolean  ret = false;
-        File     fd  = context.getFilesDir();
+        AppState as = this;
+        boolean ret = false;
+        File fd = context.getFilesDir();
         if (null == fd) {
             Log.e(getLogTAG(), "Unable to get files dir from ApplicationExt");
         } else {
@@ -495,7 +530,7 @@ public class AppState {
 
     private static String getFQN(Context context) {
         String filePath = null;
-        File   fd       = context.getFilesDir();
+        File fd = context.getFilesDir();
         if (null == fd) {
             Log.e(CLASSTAG, "Unable to get files dir from ApplicationExt");
         } else {
@@ -598,15 +633,15 @@ public class AppState {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + AppState.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + AppState.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = kDefaultClassCountable;
+    private static boolean classCountable = kDefaultClassCountable;
 
     @Override
     protected void finalize() throws Throwable {
@@ -650,16 +685,16 @@ public class AppState {
 
 
     public String asJson() {
-        GsonBuilder builder        = GsonFactory.standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static AppState fromJson(String json) {
-        GsonBuilder builder          = GsonFactory.standardBuilder();
-        Gson        jsonDeserializer = builder.create();
-        AppState    theObject        = jsonDeserializer.fromJson(json, AppState.class);
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        AppState theObject = jsonDeserializer.fromJson(json, AppState.class);
         return theObject;
     }
 

@@ -1,7 +1,10 @@
 package com.portableehr.sdk.util;
 
-import androidx.annotation.Nullable;
+import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
+
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.portableehr.sdk.EHRLibRuntime;
 import com.portableehr.sdk.models.notification.NotificationModel;
@@ -25,8 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
-
 
 /**
  * Created by : yvesleborg
@@ -42,10 +43,10 @@ public class FileUtils {
         setClassCountable(false);
     }
 
-    public final static String appStateFileName           = "appState.json";
-    public final static String serviceModelFileName       = "serviceModel.json";
+    public final static String appStateFileName = "appState.json";
+    public final static String serviceModelFileName = "serviceModel.json";
     public final static String notificationsModelFileName = "notificationsModel.json";
-    public final static String userModelFileName          = "userModel.json";
+    public final static String userModelFileName = "userModel.json";
 
     @SuppressWarnings("unused")
     public static String readAppStateJson() {
@@ -78,8 +79,8 @@ public class FileUtils {
                 Log.e(CLASSTAG, "An error occured when creating a notification model on the device.");
                 if (theCall != null) {
                     try {
-                        NotificationsListCall nlc       = (NotificationsListCall) theCall;
-                        String                reqstatus = nlc.getRequestStatus().asJson();
+                        NotificationsListCall nlc = (NotificationsListCall) theCall;
+                        String reqstatus = nlc.getRequestStatus().asJson();
                         Log.d(CLASSTAG, "Got response for backend : \n" + reqstatus);
                     } catch (Exception e) {
                         String es = StringUtils.getStackTrace(e);
@@ -107,8 +108,8 @@ public class FileUtils {
     }
 
     public static boolean saveNotificationsModelOnDevice(NotificationModel notificationModel) {
-        boolean ret      = false;
-        String  filePath = getFQN(notificationsModelFileName);
+        boolean ret = false;
+        String filePath = getFQN(notificationsModelFileName);
         if (notificationsModelExistsOnDevice()) { // todo, could be a major regression : was serviceModelExistsOnDevice
             deleteNotificationsModelFromDevice();
         }
@@ -130,7 +131,7 @@ public class FileUtils {
 
     public static void deleteNotificationsModelFromDevice() {
         String filePath = getFQN(notificationsModelFileName);
-        File   file     = new File(filePath);
+        File file = new File(filePath);
         if (!file.delete()) {
             Log.e(CLASSTAG, "*** Unable to delete previous notificationsModel");
         }
@@ -169,8 +170,8 @@ public class FileUtils {
     }
 
     public static boolean saveServiceModelOnDevice(ServiceModel serviceModel) {
-        boolean ret      = false;
-        String  filePath = getFQN(serviceModelFileName);
+        boolean ret = false;
+        String filePath = getFQN(serviceModelFileName);
         if (serviceModelExistsOnDevice()) {
             File file = new File(filePath);
             if (!file.delete()) {
@@ -195,7 +196,7 @@ public class FileUtils {
 
     public static void deleteServiceModelFromDevice() {
         String filePath = getFQN(serviceModelFileName);
-        File   file     = new File(filePath);
+        File file = new File(filePath);
         if (!file.delete()) {
             Log.e(CLASSTAG, "*** Unable to delete previous serviceModel");
         }
@@ -213,19 +214,21 @@ public class FileUtils {
     public static String readJsonFromFilePath(String filePath) {
         String json = null;
         if (null != filePath) {
-            try {
-                FileInputStream fis  = new FileInputStream(filePath);
-                byte[]          data = new byte[fis.available()];
-                int             bc   = fis.read(data);
-                fis.close();
-                if (bc > 0) {
-                    json = new String(data);
-                } else {
-                    Log.e(CLASSTAG, "readJsonFromFilePath : got empty file[" + filePath + "]");
+            if (new File(filePath).exists()) {
+                try {
+                    FileInputStream fis = new FileInputStream(filePath);
+                    byte[] data = new byte[fis.available()];
+                    int bc = fis.read(data);
+                    fis.close();
+                    if (bc > 0) {
+                        json = new String(data);
+                    } else {
+                        Log.e(CLASSTAG, "readJsonFromFilePath : got empty file[" + filePath + "]");
+                    }
+                } catch (Exception e) {
+                    Log.e(CLASSTAG, "readJsonFromFilePath : Caught exception when reading file[" + filePath + "]");
+                    Log.wtf(CLASSTAG, e);
                 }
-            } catch (Exception e) {
-                Log.e(CLASSTAG, "readJsonFromFilePath : Caught exception when reading file[" + filePath + "]");
-                Log.wtf(CLASSTAG, e);
             }
         }
         return json;
@@ -233,7 +236,7 @@ public class FileUtils {
 
     private static String getFQN(String fileName) {
         String filePath = null;
-        File   fd       = EHRLibRuntime.getInstance().getContext().getFilesDir();
+        File fd = EHRLibRuntime.getInstance().getContext().getFilesDir();
         if (null == fd) {
             Log.e(CLASSTAG, "Unable to get files dir from ApplicationExt");
         } else {
@@ -249,7 +252,7 @@ public class FileUtils {
             return false;
         }
         String filePath = fd.getAbsolutePath() + "/" + fileName;
-        File   f        = new File(filePath);
+        File f = new File(filePath);
         return f.exists();
     }
     //endregion
@@ -262,7 +265,7 @@ public class FileUtils {
             Log.wtf(CLASSTAG, "mkdir: context Returns null files dir!");
             return false;
         }
-        File    f       = new File(folderPath);
+        File f = new File(folderPath);
         boolean success = f.mkdirs();
         if (!success) {
             Log.e(CLASSTAG, "mkdir: failed to makedir on " + folderPath);
@@ -381,7 +384,7 @@ public class FileUtils {
     @SuppressWarnings("unused")
     public static String[] listRootDirectoriesPath() {
         List<String> result = new ArrayList<>();
-        File         fd     = EHRLibRuntime.getInstance().getContext().getFilesDir();
+        File fd = EHRLibRuntime.getInstance().getContext().getFilesDir();
         if (null == fd) {
             Log.wtf(CLASSTAG, "listRootDirectories: context Returns null files dir!");
             String[] res = new String[result.size()];
@@ -402,15 +405,15 @@ public class FileUtils {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + FileUtils.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + FileUtils.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = false;
+    private static boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {

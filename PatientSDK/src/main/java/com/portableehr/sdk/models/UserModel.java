@@ -55,7 +55,11 @@ public class UserModel extends AbstractPollingModel {
             UserModel._instance = new UserModel();
             String guid = AppState.getInstance().getSecureCredentials().getUserCredentials().getUserGuid();
             if (guid != null && !guid.equals("")) {
-                _instance.setUser(loadFromDevice(guid).getUser());
+                IBUser usr = null;
+                UserModel _user = loadFromDevice(guid);
+                if (_user == null) usr = IBUser.guest();
+                else usr = _user.getUser();
+                _instance.setUser(usr);
             } else {
                 _instance.setUser(IBUser.guest());
             }

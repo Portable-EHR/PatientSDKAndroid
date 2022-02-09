@@ -110,14 +110,15 @@ public class UserModel extends AbstractPollingModel {
                 Log.e(CLASSTAG, "loadFromDevice : got null json for " + userGuid);
             }
         } else {
-            String json = com.portableehr.patientsdk.utils.FileUtils.readUserModelJson(EHRLibRuntime.getInstance().getContext());
-            if (json != null) {
-                um = UserModel.fromJson(json);
-            } else {
-                Log.e(CLASSTAG, "loadFromDevice : got null json for readUserModelJson");
-            }
             Log.e(CLASSTAG, "loadFromDevice : null path for user model !");
         }
+        String json = com.portableehr.patientsdk.utils.FileUtils.readUserModelJson(EHRLibRuntime.getInstance().getContext());
+        if (json != null) {
+            um = UserModel.fromJson(json);
+        } else {
+            Log.e(CLASSTAG, "loadFromDevice : got null json for readUserModelJson");
+        }
+
         return um;
     }
 

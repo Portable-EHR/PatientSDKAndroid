@@ -1,5 +1,7 @@
 package com.portableehr.sdk.network.NAO.inbound;
 
+import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -13,8 +15,6 @@ import com.portableehr.sdk.network.gson.GsonFactory;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
-
 /**
  * Created by : yvesleborg
  * Date       : 2017-03-31
@@ -24,19 +24,21 @@ import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 
 public class IBUser {
 
-    private String    guid;
-    private String    apiKey;
-    private String    status;
-    private String    role;
-    private String    dispensaryRole;
-    private boolean   emailVerified;
-    private boolean   mobileVerified;
-    private boolean   identityVerified;
+    private String guid;
+    private String apiKey;
+    private String status;
+    private String role;
+    private String dispensaryRole;
+    private boolean emailVerified;
+    private boolean mobileVerified;
+    private boolean identityVerified;
     private IBContact contact;
-    private Date      lastUpdated;
-    private Date      createdOn;
+    private Date lastUpdated;
+    private Date createdOn;
     private IBPatient patient;
-    private boolean   forcePasswordChange;
+    private boolean forcePasswordChange;
+    private boolean deviceEmailVerified;
+    private boolean deviceMobileVerified;
 
     public IBDsuPrefs getDsuPrefs() {
         return dsuPrefs;
@@ -85,6 +87,8 @@ public class IBUser {
         g.contact.setFirstName("Distinguished");
         g.isPractitioner = false;
         g.forcePasswordChange = false;
+        g.deviceEmailVerified = true;
+        g.deviceMobileVerified = true;
         return g;
     }
 
@@ -228,18 +232,34 @@ public class IBUser {
         forcePasswordChange = pwdChange;
     }
 
+    public boolean isDeviceEmailVerified() {
+        return this.deviceEmailVerified;
+    }
+
+    public void setDeviceEmailVerified(boolean verified) {
+        deviceEmailVerified = verified;
+    }
+
+    public boolean isDeviceMobileVerified() {
+        return this.deviceMobileVerified;
+    }
+
+    public void setDeviceMobileVerified(boolean verified) {
+        deviceMobileVerified = verified;
+    }
+
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + IBUser.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + IBUser.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = false;
+    private static boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {
@@ -282,16 +302,16 @@ public class IBUser {
 
 
     public String asJson() {
-        GsonBuilder builder        = GsonFactory.standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static IBUser fromJson(String json) {
-        GsonBuilder builder          = GsonFactory.standardBuilder();
-        Gson        jsonDeserializer = builder.create();
-        IBUser      theObject        = jsonDeserializer.fromJson(json, IBUser.class);
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        IBUser theObject = jsonDeserializer.fromJson(json, IBUser.class);
         return theObject;
     }
 

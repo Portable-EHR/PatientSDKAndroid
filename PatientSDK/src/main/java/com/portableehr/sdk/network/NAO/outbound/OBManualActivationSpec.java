@@ -1,5 +1,8 @@
 package com.portableehr.sdk.network.NAO.outbound;
 
+import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
+import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -7,9 +10,6 @@ import com.google.gson.GsonBuilder;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
 import java.util.HashMap;
-
-import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
-import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
 
 /**
  * Created by : yvesleborg
@@ -27,7 +27,8 @@ public class OBManualActivationSpec {
     private String HCINjurisdiction;
     private String HCIN;
     private String email;
-    private String dispensaryGuid;
+    private String mobile;
+    //    private String dispensaryGuid;
     private String patientFileNumber;
 
     public OBManualActivationSpec() {
@@ -38,8 +39,9 @@ public class OBManualActivationSpec {
         OBManualActivationSpec omas = new OBManualActivationSpec();
         omas.HCINjurisdiction = "RAMQ";
         omas.HCIN = "LEBY55041510";
-        omas.dispensaryGuid = "43d081ad-5459-46e7-a49f-976f72b8b0bb";
+//        omas.dispensaryGuid = "43d081ad-5459-46e7-a49f-976f72b8b0bb";
         omas.email = "yves@leborgne.org";
+        omas.mobile = "yves@leborgne.org";
         omas.patientFileNumber = "A47";
         return omas;
     }
@@ -53,11 +55,14 @@ public class OBManualActivationSpec {
         if (this.HCINjurisdiction != null) {
             map.put("HCINjurisdiction", this.HCINjurisdiction);
         }
-        if (this.dispensaryGuid != null) {
-            map.put("dispensaryGuid", this.dispensaryGuid);
-        }
+//        if (this.dispensaryGuid != null) {
+//            map.put("dispensaryGuid", this.dispensaryGuid);
+//        }
         if (this.email != null) {
             map.put("email", this.email);
+        }
+        if (this.mobile != null) {
+            map.put("mobilePhone", this.mobile);
         }
         if (this.patientFileNumber != null) {
             map.put("patientFileNumber", this.patientFileNumber);
@@ -95,13 +100,21 @@ public class OBManualActivationSpec {
         this.email = email;
     }
 
-    public String getDispensaryGuid() {
-        return dispensaryGuid;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setDispensaryGuid(String dispensaryGuid) {
-        this.dispensaryGuid = dispensaryGuid;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
+
+//    public String getDispensaryGuid() {
+//        return dispensaryGuid;
+//    }
+//
+//    public void setDispensaryGuid(String dispensaryGuid) {
+//        this.dispensaryGuid = dispensaryGuid;
+//    }
 
     public String getPatientFileNumber() {
         return patientFileNumber;
@@ -114,15 +127,15 @@ public class OBManualActivationSpec {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + OBManualActivationSpec.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + OBManualActivationSpec.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = false;
+    private static boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {
@@ -165,16 +178,16 @@ public class OBManualActivationSpec {
 
 
     public String asJson() {
-        GsonBuilder builder        = standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static OBManualActivationSpec fromJson(String json) {
-        GsonBuilder            builder          = standardBuilder();
-        Gson                   jsonDeserializer = builder.create();
-        OBManualActivationSpec theObject        = jsonDeserializer.fromJson(json, OBManualActivationSpec.class);
+        GsonBuilder builder = standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        OBManualActivationSpec theObject = jsonDeserializer.fromJson(json, OBManualActivationSpec.class);
         return theObject;
     }
 

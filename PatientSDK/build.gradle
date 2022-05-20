@@ -43,6 +43,7 @@ uploadArchives {
             authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
         }
     }
+    repositories.mavenLocal()
 }
 
 dependencies {
@@ -59,3 +60,14 @@ dependencies {
 }
 
 apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+
+
+task installLocal(type: Upload) {
+    description "Installs the artifacts to the local Maven repository."
+    configuration = configurations['archives']
+    repositories {
+        mavenDeployer {
+            repository url: repositories.mavenLocal().url
+        }
+    }
+}

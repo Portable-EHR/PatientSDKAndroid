@@ -11,20 +11,19 @@ package com.portableehr.sdk;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.portableehr.sdk.models.UserModel;
 import com.portableehr.sdk.models.notification.NotificationModel;
 import com.portableehr.sdk.models.service.ServiceModel;
 import com.portableehr.sdk.network.NAO.inbound.IBAppInfo;
 import com.portableehr.sdk.network.NAO.inbound.IBDeviceInfo;
 import com.portableehr.sdk.network.NAO.inbound.IBUser;
-import com.portableehr.sdk.network.NAO.inbound.IBVersion;
 import com.portableehr.sdk.network.ehrApi.EHRApiServer;
 import com.portableehr.sdk.network.ehrApi.EHRServerRequest;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -57,11 +56,13 @@ public class EHRLibRuntime {
     @SuppressWarnings("deprecation")
     public static       Date   kEpochStart                = new Date("1 jan 1970");
 
-    private              Context                       context;
-    private              IBDeviceInfo                  deviceInfo;
-    private              EHRApiServer                  server;
-    private              String                        deviceLanguage;
-    private              IBAppInfo                     appInfo;
+    private Context context;
+    private IBDeviceInfo deviceInfo;
+    private EHRApiServer server;
+    private String deviceLanguage;
+    private IBAppInfo appInfo;
+    private EHRApiServer customApiServer;
+    private EHRApiServer customOAMPServer;
 
     public RestAPI api;
     private static EHRLibRuntime  instance;
@@ -92,9 +93,13 @@ public class EHRLibRuntime {
         this.setDeviceLanguage(dl);
     }
 
-    public void initialize(Context context, String appGuid, String appAlias, String appVersion, String stackKey) {
+    public void initialize(Context context, String appGuid, String appAlias, String appVersion,
+                           String stackKey, @Nullable EHRApiServer customApiServer,
+                           @Nullable EHRApiServer customOAMPServer) {
         this.context = context;
         PehrSDKConfiguration.getInstance(appGuid, appAlias, appVersion, stackKey);
+        this.customApiServer = customApiServer;
+        this.customOAMPServer = customOAMPServer;
         this.setServer(getCurrentServer());
         setDeviceInfo(IBDeviceInfo.initFromDevice(context));
     }
@@ -133,10 +138,8 @@ public class EHRLibRuntime {
                 api.setScheme("https");
                 api.setPort(443);
                 break;
-            case "CA.local":
-                api.setServerDNSname("api.portableehr.local");
-                api.setScheme("http");
-                api.setPort(8080);
+            case "custom":
+                api = EHRLibRuntime.getInstance().customApiServer;
                 break;
             default:
                 Log.e(EHRLibRuntime.class.getName(), String.format("*** Unknown stack key [%s] when fetching API server.", stackKey));
@@ -172,10 +175,8 @@ public class EHRLibRuntime {
                 oamp.setScheme("https");
                 oamp.setPort(443);
                 break;
-            case "CA.local":
-                oamp.setServerDNSname("oamp.portableehr.local");
-                oamp.setScheme("http");
-                oamp.setPort(80);
+            case "custom":
+                oamp = EHRLibRuntime.getInstance().customOAMPServer;
                 break;
             default:
                 Log.e(EHRLibRuntime.class.getName(), String.format("*** Unknown stack key [%s] when fetching OAMP server.", stackKey));

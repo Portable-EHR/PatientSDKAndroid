@@ -277,6 +277,9 @@ public class UserModel extends AbstractPollingModel {
             this.user.setContact(other.getContact());
             this.user.setLastUpdated(other.getLastUpdated());
             this.user.setStatus(other.getStatus());
+            this.user.setDeviceEmailVerified(other.isDeviceEmailVerified());
+            this.user.setDeviceMobileVerified(other.isDeviceMobileVerified());
+            this.user.setForcePasswordChange(other.isForcePasswordChange());
 
         }
         if (save) {

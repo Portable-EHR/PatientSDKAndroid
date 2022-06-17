@@ -15,6 +15,7 @@ public class IBPrivateMessageInfo {
     private Date   createdOn;
     private Date   seenOn;
     private Date   acknowledgedOn;
+    private String author;
 
     public String getGuid() {
         return guid;
@@ -56,12 +57,21 @@ public class IBPrivateMessageInfo {
         this.acknowledgedOn = acknowledgedOn;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public void updateWith(IBPrivateMessageInfo fresh) {
         guid = fresh.guid;
         source = fresh.source;
         createdOn = fresh.createdOn;
         seenOn = fresh.seenOn;
         acknowledgedOn = fresh.acknowledgedOn;
+        author = fresh.author;
     }
 
 }

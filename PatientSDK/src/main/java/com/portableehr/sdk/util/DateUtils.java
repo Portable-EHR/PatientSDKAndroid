@@ -1,6 +1,15 @@
 package com.portableehr.sdk.util;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by : yvesleborg
@@ -105,6 +114,11 @@ public class DateUtils {
      */
     public static String distanceFromDate(Date date) {
         return distanceFromDate(date, "en", true);
+    }
+
+    public static String displayDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm", Locale.getDefault());
+        return dateFormat.format(date);
     }
 
 }

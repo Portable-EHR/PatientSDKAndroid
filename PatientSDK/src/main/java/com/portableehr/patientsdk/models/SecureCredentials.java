@@ -39,6 +39,9 @@ public class SecureCredentials implements Serializable {
         private static final String kEulaDateConsentedKey = "kEulaDateConsentedKey";
         private static final String kNullString = "kNullString";
         private static final String kResearchConsentDismissedKey = "kResearchConsentDismissedKey";
+        private static final String kIsUserPasswordSetKey = "kIsUserPasswordSetKey";
+        private static final String kIsUserPhoneVerifiedKey = "kIsUserPhoneVerifiedKey";
+        private static final String kIsUserEmailVerifiedKey = "kIsUserEmailVerifiedKey";
         private static final long kNullDate = 0;
 
         private String deviceGuid;
@@ -49,6 +52,9 @@ public class SecureCredentials implements Serializable {
         private Date eulaDateConsented;
         private String eulaGuid;
         private boolean researchConsentDismissedKey = false;
+        private boolean isUserPasswordSet = false;
+        private boolean isUserPhoneVerified = false;
+        private boolean isUserEmailVerified = false;
 
 
         /**
@@ -154,6 +160,33 @@ public class SecureCredentials implements Serializable {
             return true;
         }
 
+        public boolean isUserPasswordSet() {
+            return isUserPasswordSet;
+        }
+
+        public void setIsUserPasswordSet(boolean value) {
+            this.isUserPasswordSet = value;
+            saveBoolean(kIsUserPasswordSetKey, isUserPasswordSet);
+        }
+
+        public boolean isUserPhoneVerified() {
+            return isUserPhoneVerified;
+        }
+
+        public void setIsUserPhoneVerified(boolean value) {
+            this.isUserPhoneVerified = value;
+            saveBoolean(kIsUserPhoneVerifiedKey, isUserPhoneVerified);
+        }
+
+        public boolean isUserEmailVerified() {
+            return isUserEmailVerified;
+        }
+
+        public void setIsUserEmailVerified(boolean value) {
+            this.isUserEmailVerified = value;
+            saveBoolean(kIsUserEmailVerifiedKey, isUserEmailVerified);
+        }
+
         public boolean loadFromKeyStore() {
 
             try {
@@ -170,6 +203,9 @@ public class SecureCredentials implements Serializable {
                 this.userGuid = loadString(kUserGuidKey);
                 this.userApiKey = loadString(kUserApiKeyKey);
                 this.researchConsentDismissedKey = loadBoolean(kResearchConsentDismissedKey);
+                this.isUserPasswordSet = loadBoolean(kIsUserPasswordSetKey);
+                this.isUserEmailVerified = loadBoolean(kIsUserEmailVerifiedKey);
+                this.isUserPhoneVerified = loadBoolean(kIsUserPhoneVerifiedKey);
 
             } catch (Exception e) {
                 Log.wtf(getLogTAG(), "loadFromKeyStore:  An error occured when saving secure credentials", e);
@@ -192,6 +228,9 @@ public class SecureCredentials implements Serializable {
                 saveString(kUserApiKeyKey, this.userApiKey);
                 saveString(kDeviceGuidKey, this.deviceGuid);
                 saveBoolean(kResearchConsentDismissedKey, this.researchConsentDismissedKey);
+                saveBoolean(kIsUserEmailVerifiedKey, this.isUserEmailVerified);
+                saveBoolean(kIsUserPhoneVerifiedKey, this.isUserPhoneVerified);
+                saveBoolean(kIsUserPasswordSetKey, this.isUserPasswordSet);
             } catch (Exception e) {
                 Log.d(getLogTAG(), "An error occured when saving secure credentials");
                 e.printStackTrace();

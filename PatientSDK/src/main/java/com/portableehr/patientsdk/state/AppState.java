@@ -26,6 +26,7 @@ import com.portableehr.sdk.network.NAO.inbound.IBConsent;
 import com.portableehr.sdk.network.NAO.inbound.IBDeviceInfo;
 import com.portableehr.sdk.network.NAO.inbound.IBPatient;
 import com.portableehr.sdk.network.NAO.inbound.IBUser;
+import com.portableehr.sdk.network.NAO.inbound.conversations.EntryAttachment;
 import com.portableehr.sdk.network.ehrApi.EHRApiServer;
 import com.portableehr.sdk.network.gson.GSONexcludeInbound;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
@@ -148,6 +149,7 @@ public class AppState {
     private IBAppInfo appInfo;
     private List<IBConsent> consents;
     private IBConsent currentConsent;
+    private EntryAttachment entryAttachment;
 
 
     @GSONexcludeOutbound
@@ -380,6 +382,14 @@ public class AppState {
 
     public EHRApiServer getOAMPserver() {
         return this.OAMPserver;
+    }
+
+    public EntryAttachment getEntryAttachment() {
+        return entryAttachment;
+    }
+
+    public void setEntryAttachment(EntryAttachment entryAttachment) {
+        this.entryAttachment = entryAttachment;
     }
 
     @Nullable

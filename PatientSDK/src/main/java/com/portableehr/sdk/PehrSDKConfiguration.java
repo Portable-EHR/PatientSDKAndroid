@@ -40,20 +40,6 @@ public class PehrSDKConfiguration {
         this.properties = properties;
 
         sharedPreferences = EHRLibRuntime.getInstance().getContext().getSharedPreferences("userConfig", Context.MODE_PRIVATE);
-
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("PehrSDKConfiguration", "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-                        String token = task.getResult();
-                        updatePushToken(token);
-                        Log.d("ZEUS", "FCM Token: " + token);
-                    }
-                });
     }
 
     public static PehrSDKConfiguration getInstance() {
@@ -126,7 +112,7 @@ public class PehrSDKConfiguration {
     }
 
 
-    private void updatePushToken(String token) {
+    public void updatePushToken(String token) {
         if (token == null || token.equals(getPushToken())) {
             return; // no need to update when token is null or same as saved earlier
         }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ConversationEntryPayload {
     private String text;
-    private List<EntryAttachment> attachments;
+    private List<Attachment> attachments;
 
     public String getText() {
         return text;
@@ -14,11 +14,11 @@ public class ConversationEntryPayload {
         this.text = text;
     }
 
-    public List<EntryAttachment> getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<EntryAttachment> attachments) {
+    public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
 

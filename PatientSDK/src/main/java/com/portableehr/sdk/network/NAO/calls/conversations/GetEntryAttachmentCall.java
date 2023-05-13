@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.portableehr.sdk.network.NAO.inbound.conversations.EntryAttachment;
+import com.portableehr.sdk.network.NAO.inbound.conversations.Attachment;
 import com.portableehr.sdk.network.NAO.responses.conversations.GetEntryAttachmentServerResponse;
 import com.portableehr.sdk.network.ehrApi.AbstractEHRCall;
 import com.portableehr.sdk.network.ehrApi.EHRRequestStatus;
@@ -18,18 +18,18 @@ import com.portableehr.sdk.network.protocols.ICompletionHandler;
 
 public class GetEntryAttachmentCall extends AbstractEHRCall {
 
-    private EntryAttachment responseContent;
+    private Attachment responseContent;
 
     public GetEntryAttachmentCall(EHRServerRequest serverRequest, ICompletionHandler completionHandler) {
         super(serverRequest, completionHandler);
         onNew();
     }
 
-    public EntryAttachment getResponseContent() {
+    public Attachment getResponseContent() {
         return responseContent;
     }
 
-    public void setResponseContent(EntryAttachment responseContent) {
+    public void setResponseContent(Attachment responseContent) {
         this.responseContent = responseContent;
     }
 

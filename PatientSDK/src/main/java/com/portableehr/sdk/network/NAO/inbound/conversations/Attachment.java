@@ -4,7 +4,7 @@ package com.portableehr.sdk.network.NAO.inbound.conversations;
 import android.util.Base64;
 import android.util.Log;
 
-public class EntryAttachment {
+public class Attachment {
     private String id;
     private String name;
     private String mimeType;

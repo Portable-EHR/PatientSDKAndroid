@@ -2,6 +2,7 @@ package com.portableehr.sdk.network.NAO.inbound;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -29,47 +30,48 @@ public class IBNotification implements Comparable<IBNotification> {
         setClassCountable(false);
     }
 
-    private String               guid;
-    private String               capabilityAlias;
-    private String               subject;
-    private String               text;
-    private String               textRenderer;
-    private String               summary;
-    private String               seq;
-    private String               capabilityGuid;
-    private boolean              confidential;
-    private String               senderName;
-    private String               notificationLevel; // info|patient|alert
-    private String               aboutType;
-    private String               aboutGuid;
-    private String               payloadType;
-    private Date                 seenOn;
-    private Date                 createdOn;
-    private Date                 ackedOn;
+    private String guid;
+    private String capabilityAlias;
+    private String subject;
+    private String text;
+    private String textRenderer;
+    private String summary;
+    private String seq;
+    private String capabilityGuid;
+    private boolean confidential;
+    private String senderName;
+    private String notificationLevel; // info|patient|alert
+    private String aboutType;
+    private String aboutGuid;
+    private String payloadType;
+    private Date seenOn;
+    private Date createdOn;
+    private Date ackedOn;
     @Nullable
-    private Date                 archivedOn;
+    private Date archivedOn;
     @Nullable
-    private Date                 deletedOn;
+    private Date deletedOn;
     @Nullable
-    private Date                 expiresOn;
-    private String               patientGuid;
-    private String               practitionerGuid;
-    private String               progress;
-    private String               thumb;
-    private URL                  url;
-    private Date                 lastUpdated;
+    private Date expiresOn;
+    private String patientGuid;
+    private String practitionerGuid;
+    private String progress;
+    private String thumb;
+    private URL url;
+    private Date lastUpdated;
     @Nullable
-    private Date                 lastSeen;
-    private IBLabRequest         labRequest;
-    private IBLabResult          labResult;
-    private IBMessageContent     message;
-    private IBPrivateMessageInfo telexInfo;
+    private Date lastSeen;
+    private IBLabRequest labRequest;
+    private IBLabResult labResult;
+    private IBMessageContent message;
     @Nullable
-    private Appointment          appointment;
+    private IBPrivateMessageInfo privateMessageInfo;
     @Nullable
-    private ReplyEnvelope        replyEnvelope;
-    private IBAnnotation         annotation;
-    private IBDeviceInfo         deviceInfo;
+    private Appointment appointment;
+    @Nullable
+    private ReplyEnvelope replyEnvelope;
+    private IBAnnotation annotation;
+    private IBDeviceInfo deviceInfo;
 
     /*  backend , 1.1(023)
 
@@ -231,7 +233,7 @@ public class IBNotification implements Comparable<IBNotification> {
         }
 
         if (isPrivateMessage()) {
-            if (this.telexInfo != null && null != this.telexInfo.getAcknowledgedOn()) {
+            if (this.privateMessageInfo != null && null != this.privateMessageInfo.getAcknowledgedOn()) {
                 return true;
             }
         }
@@ -250,7 +252,7 @@ public class IBNotification implements Comparable<IBNotification> {
         if (isAppointment()) {
             return (getAppointment() != null) && (getAppointment().isActionRequired() || (getAppointment().isInPlay() && hasUnseenContent()));
         } else if (isPrivateMessage()) {
-            if (this.telexInfo != null && null == this.telexInfo.getAcknowledgedOn()) {
+            if (this.privateMessageInfo != null && null == this.privateMessageInfo.getAcknowledgedOn()) {
                 return true;
             }
         }
@@ -425,12 +427,12 @@ public class IBNotification implements Comparable<IBNotification> {
         this.seq = seq;
     }
 
-    public IBPrivateMessageInfo getTelexInfo() {
-        return telexInfo;
+    public IBPrivateMessageInfo getPrivateMessageInfo() {
+        return privateMessageInfo;
     }
 
-    public void setTelexInfo(IBPrivateMessageInfo telexInfo) {
-        this.telexInfo = telexInfo;
+    public void setPrivateMessageInfo(IBPrivateMessageInfo privateMessageInfo) {
+        this.privateMessageInfo = privateMessageInfo;
     }
 
     @Nullable
@@ -590,13 +592,13 @@ public class IBNotification implements Comparable<IBNotification> {
         replyEnvelope = fresh.replyEnvelope;
         progress = fresh.progress;
 
-        if (null == telexInfo) {
-            telexInfo = fresh.telexInfo;
+        if (null == privateMessageInfo) {
+            privateMessageInfo = fresh.privateMessageInfo;
         } else {
-            if (null == fresh.telexInfo) {
-                telexInfo = null;
+            if (null == fresh.privateMessageInfo) {
+                privateMessageInfo = null;
             } else {
-                telexInfo.updateWith(fresh.telexInfo);
+                privateMessageInfo.updateWith(fresh.privateMessageInfo);
             }
         }
 
@@ -614,7 +616,7 @@ public class IBNotification implements Comparable<IBNotification> {
 
     @Override
     public int compareTo(@NonNull IBNotification o) {
-        int thisInt  = Integer.parseInt(this.seq);
+        int thisInt = Integer.parseInt(this.seq);
         int otherInt = Integer.parseInt(o.getSeq());
         return (otherInt - thisInt);                // descending on seq
     }
@@ -625,7 +627,7 @@ public class IBNotification implements Comparable<IBNotification> {
             return false;
         }
 
-        int thisHash  = this.asJson().hashCode();
+        int thisHash = this.asJson().hashCode();
         int otherHash = other.asJson().hashCode();
         return (thisHash == otherHash);
 
@@ -641,16 +643,16 @@ public class IBNotification implements Comparable<IBNotification> {
 
 
     public String asJson() {
-        GsonBuilder builder        = GsonFactory.standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static IBNotification fromJson(String json) {
-        GsonBuilder    builder          = GsonFactory.standardBuilder();
-        Gson           jsonDeserializer = builder.create();
-        IBNotification theObject        = jsonDeserializer.fromJson(json, IBNotification.class);
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        IBNotification theObject = jsonDeserializer.fromJson(json, IBNotification.class);
         return theObject;
     }
 
@@ -659,15 +661,15 @@ public class IBNotification implements Comparable<IBNotification> {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + IBNotification.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + IBNotification.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = false;
+    private static boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.portableehr.patient.ui.user.conversations.ConversationEntryType;
+import com.portableehr.sdk.network.enums.ConversationEntryType;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 import com.portableehr.sdk.network.gson.GsonFactory;
 

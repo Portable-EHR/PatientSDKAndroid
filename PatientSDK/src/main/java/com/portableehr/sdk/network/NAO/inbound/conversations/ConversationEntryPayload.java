@@ -1,7 +1,7 @@
 package com.portableehr.sdk.network.NAO.inbound.conversations;
 
-import com.portableehr.patient.ui.user.conversations.ConversationEntryConsentStatus;
-import com.portableehr.patient.ui.user.conversations.ConversationEntryPayloadType;
+import com.portableehr.sdk.network.enums.ConversationEntryConsentStatus;
+import com.portableehr.sdk.network.enums.ConversationEntryPayloadType;
 
 import java.util.List;
 

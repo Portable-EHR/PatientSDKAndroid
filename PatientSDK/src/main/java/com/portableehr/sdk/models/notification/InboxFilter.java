@@ -22,18 +22,18 @@ import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 
 public class InboxFilter {
 
-
-    Integer           cursorIndex;
-    boolean           showArchivedNotifications;
-    boolean           showUnArchivedNotifications;
-    boolean           showAlertNotifications;
-    boolean           showPatientNotifications;
-    boolean           showInfoNotifications;
-    boolean           showPractitionerNotifications;
-    boolean           showUnreadOnly;
+    Integer cursorIndex;
+    boolean showArchivedNotifications;
+    boolean showUnArchivedNotifications;
+    boolean showAlertNotifications;
+    boolean showPatientNotifications;
+    boolean showInfoNotifications;
+    boolean showPractitionerNotifications;
+    boolean showUnreadOnly;
+    boolean showConversationNotifications = false;
     ArrayList<String> sortedKeys;
     ArrayList<String> patientSelector;
-    AbstractInbox     inbox;
+    AbstractInbox inbox;
 
     public InboxFilter() {
         onNew();
@@ -54,8 +54,8 @@ public class InboxFilter {
     }
 
     public Integer numberOfUnseen() {
-        Integer                           unseen = 0;
-        Hashtable<String, IBNotification> all    = NotificationModel.getInstance().getAllNotifications();
+        Integer unseen = 0;
+        Hashtable<String, IBNotification> all = NotificationModel.getInstance().getAllNotifications();
         for (String key : this.sortedKeys) {
             IBNotification not = all.get(key);
             if (null == not) {
@@ -81,8 +81,8 @@ public class InboxFilter {
     }
 
     public Integer numberOfActionRequired(IBUser user) {
-        Integer                           noRequiringAction = 0;
-        Hashtable<String, IBNotification> all               = getInbox().getContent();
+        Integer noRequiringAction = 0;
+        Hashtable<String, IBNotification> all = getInbox().getContent();
 
         for (String key : this.getSortedKeys()) {
             IBNotification not = all.get(key);
@@ -159,6 +159,14 @@ public class InboxFilter {
 
     public void setShowUnreadOnly(boolean showUnreadOnly) {
         this.showUnreadOnly = showUnreadOnly;
+    }
+
+    public boolean isShowConversationNotifications() {
+        return showConversationNotifications;
+    }
+
+    public void setShowConversationNotifications(boolean showConversationNotifications) {
+        this.showConversationNotifications = showConversationNotifications;
     }
 
     /*
@@ -269,7 +277,7 @@ public class InboxFilter {
             Log.e(getLogTAG(), "*** cursorIndex not in sync with notifications model!");
             return null;
         }
-        String         key          = sortedKeys.get(index);
+        String key = sortedKeys.get(index);
         IBNotification notification = NotificationModel.getInstance().getAllNotifications().get(key);
         if (null == notification) {
             Log.e(getLogTAG(), "*** Sorted keys holds a key absent from the notifications model!");
@@ -337,6 +345,10 @@ public class InboxFilter {
             return false;
         }
 
+        if (notification.isConversation()) {
+            return showConversationNotifications;
+        }
+
         if (notification.isArchived()) {
             return showArchivedNotifications;
         } else {
@@ -398,15 +410,15 @@ public class InboxFilter {
         return classCountable;
     }
 
-    private final static String  CLASSTAG = kModulePrefix + "." + InboxFilter.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + InboxFilter.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable;
+    private static boolean classCountable;
 
     @Override
     protected void finalize() throws Throwable {

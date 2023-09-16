@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.portableehr.patient.ui.user.conversations.ConversationEntryType;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 import com.portableehr.sdk.network.gson.GsonFactory;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class ConversationEntry {
     private String id;
     private String from;
-    private String type;
+    private ConversationEntryType type;
     private String audience;
     private int attachmentCount;
     private List<ConversationEntryStatus> status;
@@ -37,12 +38,12 @@ public class ConversationEntry {
         this.from = from;
     }
 
-    public String getType() {
+    public ConversationEntryType getType() {
         return type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.type = ConversationEntryType.valueOf(type);
     }
 
     public String getAudience() {

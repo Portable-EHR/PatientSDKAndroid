@@ -3,11 +3,9 @@ package com.portableehr.sdk.network.NAO.inbound;
 import android.util.Base64;
 import android.util.Log;
 
-import com.portableehr.sdk.network.NAO.inbound.conversations.Attachment;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
 import java.util.Date;
-import java.util.List;
 
 import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 
@@ -24,10 +22,12 @@ public class IBPrivateMessage {
     private String from;
     private String patient;
     private String to;
-    private Date date;
+    private Date   date;
     private String messageB64;
     private String source;
-    private List<Attachment> attachments;
+    private String documentB64;
+    private String documentType;
+    private String documentName;
 
     private IBPrivateMessage() {
         onNew();
@@ -82,11 +82,11 @@ public class IBPrivateMessage {
     }
 
     public String getMessage() {
-        String b64 = this.getMessageB64();
+        String b64     = this.getMessageB64();
         String message = "";
         if (b64 != null) {
             try {
-                byte[] bytes = b64.getBytes();
+                byte[] bytes        = b64.getBytes();
                 byte[] messageBytes = Base64.decode(bytes, 0);
                 message = new String(messageBytes, "UTF-8");
 //                message = new String(messageBytes, "ISO-8859-1");
@@ -108,11 +108,20 @@ public class IBPrivateMessage {
         this.source = source;
     }
 
-    public byte[] getDocument(String b64) {
+    public String getDocumentB64() {
+        return documentB64;
+    }
+
+    public void setDocumentB64(String documentB64) {
+        this.documentB64 = documentB64;
+    }
+
+    public byte[] getDocument() {
+        String b64   = this.getDocumentB64();
         byte[] messageBytes;
         if (b64 != null) {
             try {
-                byte[] bytes = b64.getBytes();
+                byte[] bytes        = b64.getBytes();
                 messageBytes = Base64.decode(bytes, 0);
             } catch (Exception e) {
                 Log.wtf(TAG, "getMessage: Caucht exception while bessageB64", e);
@@ -124,29 +133,38 @@ public class IBPrivateMessage {
         }
     }
 
-    public boolean hasAttachments() {
-        return attachments != null && attachments.size() > 0;
+    public boolean hasDocument(){
+        return this.getDocumentB64()!=null;
     }
 
-    public List<Attachment> getAttachments() {
-        return attachments;
+    public String getDocumentType() {
+        return documentType;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
     }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
+    }
+
 
     //region Countable
 
-    private final static String CLASSTAG = kModulePrefix + "." + IBPrivateMessage.class.getSimpleName();
+    private final static String  CLASSTAG       = kModulePrefix + "." + IBPrivateMessage.class.getSimpleName();
     @GSONexcludeOutbound
-    private String TAG;
-    private static int lifeTimeInstances;
-    private static int numberOfInstances;
+    private              String  TAG;
+    private static       int     lifeTimeInstances;
+    private static       int     numberOfInstances;
     @GSONexcludeOutbound
-    private int instanceNumber;
+    private              int     instanceNumber;
     @GSONexcludeOutbound
-    private static boolean classCountable = false;
+    private static       boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {
@@ -174,7 +192,7 @@ public class IBPrivateMessage {
         return Integer.toHexString(instanceNumber) + "/" + Integer.toHexString(numberOfInstances);
     }
 
-    public static void setClassCountable(boolean isIt) {
+    public static  void setClassCountable( boolean isIt) {
         classCountable = isIt;
     }
 

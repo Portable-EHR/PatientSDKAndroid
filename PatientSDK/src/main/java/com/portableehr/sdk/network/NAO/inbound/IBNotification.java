@@ -64,8 +64,7 @@ public class IBNotification implements Comparable<IBNotification> {
     private IBLabRequest labRequest;
     private IBLabResult labResult;
     private IBMessageContent message;
-    @Nullable
-    private IBPrivateMessageInfo privateMessageInfo;
+    private IBPrivateMessageInfo telexInfo;
     @Nullable
     private Appointment appointment;
     @Nullable
@@ -233,7 +232,7 @@ public class IBNotification implements Comparable<IBNotification> {
         }
 
         if (isPrivateMessage()) {
-            if (this.privateMessageInfo != null && null != this.privateMessageInfo.getAcknowledgedOn()) {
+            if (this.telexInfo != null && null != this.telexInfo.getAcknowledgedOn()) {
                 return true;
             }
         }
@@ -252,7 +251,7 @@ public class IBNotification implements Comparable<IBNotification> {
         if (isAppointment()) {
             return (getAppointment() != null) && (getAppointment().isActionRequired() || (getAppointment().isInPlay() && hasUnseenContent()));
         } else if (isPrivateMessage()) {
-            if (this.privateMessageInfo != null && null == this.privateMessageInfo.getAcknowledgedOn()) {
+            if (this.telexInfo != null && null == this.telexInfo.getAcknowledgedOn()) {
                 return true;
             }
         }
@@ -260,9 +259,19 @@ public class IBNotification implements Comparable<IBNotification> {
         return envelopeActionRequired() || hasUnseenContent();
     }
 
+    public boolean isConversation() {
+        if (null == aboutType) {
+            return false;
+        }
+        if ("conversation".equals(aboutType)) {
+            return true;
+        }
+        return false;
+    }
+
     public boolean hasUnseenContent() {
         if (null == lastSeen) {
-            return isSeen();
+            return !isSeen();
         }
         if (null == seenOn) {
             return true;
@@ -427,12 +436,12 @@ public class IBNotification implements Comparable<IBNotification> {
         this.seq = seq;
     }
 
-    public IBPrivateMessageInfo getPrivateMessageInfo() {
-        return privateMessageInfo;
+    public IBPrivateMessageInfo getTelexInfo() {
+        return telexInfo;
     }
 
-    public void setPrivateMessageInfo(IBPrivateMessageInfo privateMessageInfo) {
-        this.privateMessageInfo = privateMessageInfo;
+    public void setTelexInfo(IBPrivateMessageInfo telexInfo) {
+        this.telexInfo = telexInfo;
     }
 
     @Nullable
@@ -592,13 +601,13 @@ public class IBNotification implements Comparable<IBNotification> {
         replyEnvelope = fresh.replyEnvelope;
         progress = fresh.progress;
 
-        if (null == privateMessageInfo) {
-            privateMessageInfo = fresh.privateMessageInfo;
+        if (null == telexInfo) {
+            telexInfo = fresh.telexInfo;
         } else {
-            if (null == fresh.privateMessageInfo) {
-                privateMessageInfo = null;
+            if (null == fresh.telexInfo) {
+                telexInfo = null;
             } else {
-                privateMessageInfo.updateWith(fresh.privateMessageInfo);
+                telexInfo.updateWith(fresh.telexInfo);
             }
         }
 

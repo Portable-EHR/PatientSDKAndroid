@@ -9,6 +9,7 @@ public class ConversationEnvelope {
     private String clientTittle;
     private String teaser;
     private String lastUpdated;
+    private int unread;
 
     public String getGuid() {
         return guid;
@@ -46,8 +47,8 @@ public class ConversationEnvelope {
         return clientTittle;
     }
 
-    public void setClientTittle(String clientTittle) {
-        this.clientTittle = clientTittle;
+    public void setClientTittle(String clientTitle) {
+        this.clientTittle = clientTitle;
     }
 
     public String getTeaser() {
@@ -64,5 +65,13 @@ public class ConversationEnvelope {
 
     public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public int getUnread() {
+        return unread;
+    }
+
+    public void setUnread(int unread) {
+        this.unread = unread;
     }
 }

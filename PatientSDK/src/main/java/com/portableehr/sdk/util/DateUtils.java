@@ -1,15 +1,10 @@
 package com.portableehr.sdk.util;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-
-import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * Created by : yvesleborg
@@ -20,41 +15,42 @@ import java.util.TimeZone;
 public class DateUtils {
 
     static int SECONDS_IN_A_MINUTE = 60;
-    static int SECONDS_IN_A_HOUR   = 60 * 60;
-    static int SECONDS_IN_A_DAY    = 24 * 60 * 60;
-    static int SECONDS_IN_A_MONTH  = 30 * 24 * 60 * 60;
-    static int SECONDS_IN_A_YEAR   = 365 * 24 * 60 * 60;
+    static int SECONDS_IN_A_HOUR = 60 * 60;
+    static int SECONDS_IN_A_DAY = 24 * 60 * 60;
+    static int SECONDS_IN_A_MONTH = 30 * 24 * 60 * 60;
+    static int SECONDS_IN_A_YEAR = 365 * 24 * 60 * 60;
 
     static String en_abbrev_second = "s";
     static String en_abbrev_minute = "m";
-    static String en_abbrev_hour   = "h";
-    static String en_abbrev_day    = "d";
-    static String en_abbrev_month  = "M";
-    static String en_abbrev_year   = "y";
+    static String en_abbrev_hour = "h";
+    static String en_abbrev_day = "d";
+    static String en_abbrev_month = "M";
+    static String en_abbrev_year = "y";
 
     static String fr_abbrev_second = "s";
     static String fr_abbrev_minute = "m";
-    static String fr_abbrev_hour   = "h";
-    static String fr_abbrev_day    = "j";
-    static String fr_abbrev_month  = "M";
-    static String fr_abbrev_year   = "a";
+    static String fr_abbrev_hour = "h";
+    static String fr_abbrev_day = "j";
+    static String fr_abbrev_month = "M";
+    static String fr_abbrev_year = "a";
 
 
     public static String distanceFromDate(Date date, String lang, boolean decorate) {
-        String  distance;
-        Date    now           = new Date();
-        long    nowmilli      = now.getTime();
-        long    datemilli     = date.getTime();
-        boolean inThePast     = (datemilli < nowmilli);
-        long    deltamilli    = nowmilli - datemilli;
-        long    deltaLong     = deltamilli / 1000;
-        int     delta         = Math.abs((int) deltaLong);
-        String  abbrev_second = en_abbrev_second;
-        String  abbrev_minute = en_abbrev_minute;
-        String  abbrev_hour   = en_abbrev_hour;
-        String  abbrev_day    = en_abbrev_day;
-        String  abbrev_month  = en_abbrev_month;
-        String  abbrev_year   = en_abbrev_year;
+        String distance;
+        Date now = new Date();
+        long nowmilli = now.getTime();
+        long datemilli = date.getTime();
+        boolean inThePast = (datemilli < nowmilli);
+        long deltamilli = nowmilli - datemilli;
+        long deltaLong = deltamilli / 1000;
+        int delta = Math.abs((int) deltaLong);
+        String abbrev_second = en_abbrev_second;
+        String abbrev_minute = en_abbrev_minute;
+        String abbrev_hour = en_abbrev_hour;
+        String abbrev_day = en_abbrev_day;
+        String abbrev_month = en_abbrev_month;
+        String abbrev_year = en_abbrev_year;
+
         if (lang.contentEquals("fr")) {
             abbrev_second = fr_abbrev_second;
             abbrev_minute = fr_abbrev_minute;
@@ -120,5 +116,14 @@ public class DateUtils {
         DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm", Locale.getDefault());
         return dateFormat.format(date);
     }
-
+    
+    public static String displayDate(String dateStr) {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).parse(dateStr);
+            DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy, hh:mm a", Locale.getDefault());
+            return dateFormat.format(date);
+        } catch (ParseException e) {
+        }
+        return "";
+    }
 }

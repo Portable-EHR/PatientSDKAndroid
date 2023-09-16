@@ -10,6 +10,7 @@ public class Conversation {
     private String clientTittle;
     private List<ConversationParticipant> participants;
     private List<ConversationEntry> entries;
+    private int unread;
 
     public String getId() {
         return id;
@@ -39,16 +40,16 @@ public class Conversation {
         return staffTittle;
     }
 
-    public void setStaffTittle(String staffTittle) {
-        this.staffTittle = staffTittle;
+    public void setStaffTittle(String staffTitle) {
+        this.staffTittle = staffTitle;
     }
 
     public String getClientTittle() {
         return clientTittle;
     }
 
-    public void setClientTittle(String clientTittle) {
-        this.clientTittle = clientTittle;
+    public void setClientTittle(String clientTitle) {
+        this.clientTittle = clientTitle;
     }
 
     public List<ConversationParticipant> getParticipants() {
@@ -65,5 +66,13 @@ public class Conversation {
 
     public void setEntries(List<ConversationEntry> entries) {
         this.entries = entries;
+    }
+
+    public int getUnread() {
+        return unread;
+    }
+
+    public void setUnread(int unread) {
+        this.unread = unread;
     }
 }

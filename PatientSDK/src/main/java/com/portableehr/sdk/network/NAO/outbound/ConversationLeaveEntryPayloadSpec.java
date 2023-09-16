@@ -14,30 +14,23 @@ import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 import java.util.HashMap;
 import java.util.List;
 
-public class ConversationEntryPayloadSpec {
+public class ConversationLeaveEntryPayloadSpec extends ConversationEntryPayloadSpec {
 
     {
         setClassCountable(false);
     }
 
-    private String text;
-    private List<EntryAttachment> attachments;
+    private String action;
+    private String targetParticipantGuid;
 
-    public ConversationEntryPayloadSpec() {
+    public ConversationLeaveEntryPayloadSpec() {
         onNew();
-    }
-
-    public static ConversationEntryPayloadSpec getDefault() {
-        ConversationEntryPayloadSpec omas = new ConversationEntryPayloadSpec();
-        omas.text = "This is the first message from the client";
-        return omas;
     }
 
     public HashMap<String, Object> asCallParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        if (!TextUtils.isEmpty(text)) {
-            map.put("HCIN", this.text);
-        }
+        map.put("action", action);
+        map.put("targetParticipantGuid", targetParticipantGuid);
         return map;
     }
 
@@ -47,27 +40,27 @@ public class ConversationEntryPayloadSpec {
     //** Get/Set                                                                                 **/
     //*********************************************************************************************/
 
-    public String getText() {
-        return text;
+    public String getAction() {
+        return action;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setAction(String action) {
+        this.action = action;
     }
 
-    public List<EntryAttachment> getAttachments() {
-        return attachments;
+    public String getTargetParticipantGuid() {
+        return targetParticipantGuid;
     }
 
-    public void setAttachments(List<EntryAttachment> attachments) {
-        this.attachments = attachments;
+    public void setTargetParticipantGuid(String targetParticipantGuid) {
+        this.targetParticipantGuid = targetParticipantGuid;
     }
 
     //endregion
 
     //region Countable
 
-    private final static String CLASSTAG = kModulePrefix + "." + ConversationEntryPayloadSpec.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + ConversationLeaveEntryPayloadSpec.class.getSimpleName();
     @GSONexcludeOutbound
     private String TAG;
     private static int lifeTimeInstances;
@@ -124,10 +117,10 @@ public class ConversationEntryPayloadSpec {
         return theJson;
     }
 
-    public static ConversationEntryPayloadSpec fromJson(String json) {
+    public static ConversationLeaveEntryPayloadSpec fromJson(String json) {
         GsonBuilder builder = standardBuilder();
         Gson jsonDeserializer = builder.create();
-        ConversationEntryPayloadSpec theObject = jsonDeserializer.fromJson(json, ConversationEntryPayloadSpec.class);
+        ConversationLeaveEntryPayloadSpec theObject = jsonDeserializer.fromJson(json, ConversationLeaveEntryPayloadSpec.class);
         return theObject;
     }
 

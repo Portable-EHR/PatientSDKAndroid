@@ -42,6 +42,7 @@ public class SecureCredentials implements Serializable {
         private static final String kIsUserPasswordSetKey = "kIsUserPasswordSetKey";
         private static final String kIsUserPhoneVerifiedKey = "kIsUserPhoneVerifiedKey";
         private static final String kIsUserEmailVerifiedKey = "kIsUserEmailVerifiedKey";
+        private static final String kUserActivationTypeKey = "kUserActivationTypeKey";
         private static final long kNullDate = 0;
 
         private String deviceGuid;
@@ -55,6 +56,7 @@ public class SecureCredentials implements Serializable {
         private boolean isUserPasswordSet = false;
         private boolean isUserPhoneVerified = false;
         private boolean isUserEmailVerified = false;
+        private String activationType;
 
 
         /**
@@ -137,6 +139,15 @@ public class SecureCredentials implements Serializable {
         public void setUserApiKey(String userApiKey) {
             this.userApiKey = userApiKey;
             saveString(kUserApiKeyKey, userApiKey);
+        }
+
+        public String getUserActivationType() {
+            return activationType;
+        }
+
+        public void setUserActivationType(String type) {
+            this.activationType = type;
+            saveString(kUserActivationTypeKey, activationType);
         }
 
         public IBUserEula getAppEula() {

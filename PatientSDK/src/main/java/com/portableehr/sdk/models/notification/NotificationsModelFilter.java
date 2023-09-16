@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.Set;
 
 import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 
@@ -29,17 +30,17 @@ public class NotificationsModelFilter {
         setClassCountable(false);
     }
 
-    Integer           cursorIndex;
-    boolean           showArchivedNotifications;
-    boolean           showAlertNotifications;
-    boolean           showPatientNotifications;
-    boolean           showInfoNotifications;
-    boolean           showPractitionerNotifications;
-    boolean           showMessageNotifications;
-    boolean           showPrivateMessageNotifications;
-    boolean           showUnreadOnly;
-    boolean           keepAppointments; // temporary hack until we can replace this clunky model with the Inbox model
-    Integer           notificationsPerPage;
+    Integer cursorIndex;
+    boolean showArchivedNotifications;
+    boolean showAlertNotifications;
+    boolean showPatientNotifications;
+    boolean showInfoNotifications;
+    boolean showPractitionerNotifications;
+    boolean showMessageNotifications;
+    boolean showPrivateMessageNotifications;
+    boolean showUnreadOnly;
+    boolean keepAppointments; // temporary hack until we can replace this clunky model with the Inbox model
+    Integer notificationsPerPage;
     ArrayList<String> sortedKeys;
     ArrayList<String> patientSelector;
     private NotificationModelTypeEnum type;
@@ -61,8 +62,8 @@ public class NotificationsModelFilter {
 
 
     public Integer numberOfUnseen() {
-        Integer                           unseen = 0;
-        Hashtable<String, IBNotification> all    = NotificationModel.getInstance().getAllNotifications();
+        Integer unseen = 0;
+        Hashtable<String, IBNotification> all = NotificationModel.getInstance().getAllNotifications();
         for (String key : this.sortedKeys) {
             IBNotification not = all.get(key);
             if (null == not) {
@@ -85,9 +86,34 @@ public class NotificationsModelFilter {
         return unseen;
     }
 
+    public Integer numberOfUnseenConversations() {
+        Integer unseen = 0;
+        Hashtable<String, IBNotification> all = NotificationModel.getInstance().getAllNotifications();
+        Set<String> keys = all.keySet();
+        for (String key : keys) {
+            IBNotification not = all.get(key);
+            if (null == not) {
+                Log.e(getLogTAG(), "numberOfUnseen() : Notification with SEQ [" + key + "] is null !");
+                continue;
+            }
+            if (not.isArchived()) {
+                continue;
+            }
+
+            if (not.isDeleted()) {
+                continue;
+            }
+
+            if (not.hasUnseenContent() && not.isConversation()) {
+                unseen++;
+            }
+        }
+        return unseen;
+    }
+
     public Integer numberOfActionRequried(IBUser user) {
-        Integer                           noRequiringAction = 0;
-        Hashtable<String, IBNotification> all               = NotificationModel.getInstance().getAllNotifications();
+        Integer noRequiringAction = 0;
+        Hashtable<String, IBNotification> all = NotificationModel.getInstance().getAllNotifications();
         for (String key : this.sortedKeys) {
             IBNotification not = all.get(key);
             if (null == not) {
@@ -339,7 +365,7 @@ public class NotificationsModelFilter {
             Log.e(getLogTAG(), "*** cursorIndex not in sync with notifications model!");
             return null;
         }
-        String         key          = sortedKeys.get(index);
+        String key = sortedKeys.get(index);
         IBNotification notification = NotificationModel.getInstance().getAllNotifications().get(key);
         if (null == notification) {
             Log.e(getLogTAG(), "*** Sorted keys holds a key absent from the notifications model!");
@@ -487,15 +513,15 @@ public class NotificationsModelFilter {
 
     //region Countable
 
-    private final static String  CLASSTAG       = kModulePrefix + "." + NotificationsModelFilter.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + NotificationsModelFilter.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable = false;
+    private static boolean classCountable = false;
 
     @Override
     protected void finalize() throws Throwable {

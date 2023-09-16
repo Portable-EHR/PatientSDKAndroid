@@ -10,6 +10,7 @@ public class ConversationParticipant {
     private String firstName;
     private String middleName;
     private boolean mySelf;
+    private boolean active;
 
     public String getGuid() {
         return guid;
@@ -81,5 +82,13 @@ public class ConversationParticipant {
 
     public void setMySelf(boolean mySelf) {
         this.mySelf = mySelf;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -3,20 +3,20 @@ package com.portableehr.sdk.network.NAO.responses.conversations;
 import android.util.Log;
 
 import com.portableehr.sdk.EHRLibRuntime;
-import com.portableehr.sdk.network.NAO.inbound.conversations.Attachment;
+import com.portableehr.sdk.network.NAO.inbound.conversations.EntryAttachment;
 import com.portableehr.sdk.network.ehrApi.EHRServerResponse;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
 
 public class GetEntryAttachmentServerResponse extends EHRServerResponse {
 
-    Attachment responseContent;
+    EntryAttachment responseContent;
 
-    public Attachment getResponseContent() {
+    public EntryAttachment getResponseContent() {
         return responseContent;
     }
 
-    public void setResponseContent(Attachment responseContent) {
+    public void setResponseContent(EntryAttachment responseContent) {
         this.responseContent = responseContent;
     }
 

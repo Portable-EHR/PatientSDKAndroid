@@ -106,6 +106,9 @@ public class PehrSDKConfiguration {
         return sharedPreferences.getString(kDevicePushToken, "");
     }
 
+    public void resetPushToken() {
+        savePushToken("");
+    }
 
     public void updatePushToken(String token) {
         if (token == null || token.equals(getPushToken())) {

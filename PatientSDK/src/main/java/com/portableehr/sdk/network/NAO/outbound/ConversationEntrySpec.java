@@ -22,6 +22,7 @@ public class ConversationEntrySpec {
     private String audience;
     private int attachmentCount;
     private ConversationEntryPayloadSpec payload;
+    private ReplyObjectSpec repliesTo;
 
     public ConversationEntrySpec() {
         onNew();
@@ -40,14 +41,17 @@ public class ConversationEntrySpec {
 
         HashMap<String, Object> map = new HashMap<>();
         if (!TextUtils.isEmpty(type)) {
-            map.put("HCIN", this.type);
+            map.put("type", this.type);
         }
         if (!TextUtils.isEmpty(audience)) {
-            map.put("HCINjurisdiction", this.audience);
+            map.put("audience", this.audience);
         }
-        map.put("email", this.attachmentCount);
+        map.put("attachmentCount", this.attachmentCount);
         if (this.payload != null) {
-            map.put("mobilePhone", this.payload);
+            map.put("payload", this.payload);
+        }
+        if (this.repliesTo != null) {
+            map.put("repliesTo", this.repliesTo);
         }
         return map;
     }
@@ -90,7 +94,14 @@ public class ConversationEntrySpec {
         this.payload = payload;
     }
 
-    //endregion
+    public ReplyObjectSpec getRepliesTo() {
+        return repliesTo;
+    }
+
+    public void setRepliesTo(ReplyObjectSpec repliesTo) {
+        this.repliesTo = repliesTo;
+    }
+//endregion
 
     //region Countable
 

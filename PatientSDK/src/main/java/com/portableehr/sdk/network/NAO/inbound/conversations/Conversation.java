@@ -11,6 +11,7 @@ public class Conversation {
     private List<ConversationParticipant> participants;
     private List<ConversationEntry> entries;
     private int unread;
+    private List<ConversationEntry> unresolvedEntries;
 
     public String getId() {
         return id;
@@ -74,5 +75,13 @@ public class Conversation {
 
     public void setUnread(int unread) {
         this.unread = unread;
+    }
+
+    public List<ConversationEntry> getUnresolvedEntries() {
+        return unresolvedEntries;
+    }
+
+    public void setUnresolvedEntries(List<ConversationEntry> unresolvedEntries) {
+        this.unresolvedEntries = unresolvedEntries;
     }
 }

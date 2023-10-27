@@ -116,11 +116,31 @@ public class DateUtils {
         DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy HH:mm", Locale.getDefault());
         return dateFormat.format(date);
     }
-    
+
     public static String displayDate(String dateStr) {
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).parse(dateStr);
             DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy, hh:mm a", Locale.getDefault());
+            return dateFormat.format(date);
+        } catch (ParseException e) {
+        }
+        return "";
+    }
+
+    public static String displayDate(String dateStr, String outputFormat) {
+        try {
+            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).parse(dateStr);
+            DateFormat dateFormat = new SimpleDateFormat(outputFormat, Locale.getDefault());
+            return dateFormat.format(date);
+        } catch (ParseException e) {
+        }
+        return "";
+    }
+
+    public static String displayDate(String dateStr, String inputFormat, String outputFormat) {
+        try {
+            Date date = new SimpleDateFormat(inputFormat, Locale.getDefault()).parse(dateStr);
+            DateFormat dateFormat = new SimpleDateFormat(outputFormat, Locale.getDefault());
             return dateFormat.format(date);
         } catch (ParseException e) {
         }

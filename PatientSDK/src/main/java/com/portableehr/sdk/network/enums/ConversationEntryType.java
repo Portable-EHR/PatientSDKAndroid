@@ -11,13 +11,14 @@ public enum ConversationEntryType {
     @SerializedName("move") MOVE("move"),
     @SerializedName("status_change") STATUS_CHANGE("status_change"),
     @SerializedName("participant") PARTICIPANT("participant"),
-    @SerializedName("share") SHARE("share");
+    @SerializedName("share") SHARE("share"),
+    @SerializedName("assign") TASK("assign"),
+    @SerializedName("message") MESSAGE("message");
 
-    @NonNull
     private final String text;
 
 
-    ConversationEntryType(@NonNull String textValue) {
+    ConversationEntryType(String textValue) {
         this.text = textValue;
     }
 
@@ -25,7 +26,6 @@ public enum ConversationEntryType {
      * @see java.lang.Enum#toString()
      */
     @Override
-    @NonNull
     public String toString() {
         return text;
     }

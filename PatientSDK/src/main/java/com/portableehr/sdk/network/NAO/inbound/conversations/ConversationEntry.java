@@ -21,6 +21,11 @@ public class ConversationEntry {
     private List<ConversationEntryStatus> status;
     private ConversationEntryPayload payload;
     private String createdOn;
+    private List<MentionedParticipant> mentionedParticipants;
+    private boolean requiresAcknowledge;
+    private List<ConversationReplyType> possibleRepliesTypes;
+    private ConversationEntry repliesTo;
+    private List<ConversationPossibleReply> replyChoiceOptions;
 
     public String getId() {
         return id;
@@ -84,6 +89,47 @@ public class ConversationEntry {
 
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+
+
+    public List<MentionedParticipant> getMentionedParticipants() {
+        return mentionedParticipants;
+    }
+
+    public void setMentionedParticipants(List<MentionedParticipant> mentionedParticipants) {
+        this.mentionedParticipants = mentionedParticipants;
+    }
+
+    public boolean isRequiresAcknowledge() {
+        return requiresAcknowledge;
+    }
+
+    public void setRequiresAcknowledge(boolean requiresAcknowledge) {
+        this.requiresAcknowledge = requiresAcknowledge;
+    }
+
+    public List<ConversationReplyType> getPossibleRepliesTypes() {
+        return possibleRepliesTypes;
+    }
+
+    public void setPossibleRepliesTypes(List<ConversationReplyType> possibleRepliesTypes) {
+        this.possibleRepliesTypes = possibleRepliesTypes;
+    }
+
+    public ConversationEntry getRepliesTo() {
+        return repliesTo;
+    }
+
+    public void setRepliesTo(ConversationEntry repliesTo) {
+        this.repliesTo = repliesTo;
+    }
+
+    public List<ConversationPossibleReply> getReplyChoiceOptions() {
+        return replyChoiceOptions;
+    }
+
+    public void setReplyChoiceOptions(List<ConversationPossibleReply> choiceReplyOptions) {
+        this.replyChoiceOptions = choiceReplyOptions;
     }
 
     public ConversationEntry() {

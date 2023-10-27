@@ -8,50 +8,32 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.portableehr.sdk.network.NAO.inbound.conversations.EntryAttachment;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class ConversationEntryPayloadSpec {
+public class ReplyObjectSpec {
 
     {
         setClassCountable(false);
     }
 
-    private String text;
-    private String freeTextReply;
-    private String dateReply;
-    private String dateTimeReply;
-    private ReplyObjectSpec choiceReply;
-    private List<EntryAttachment> attachments;
+    private String id;
 
-    public ConversationEntryPayloadSpec() {
+    public ReplyObjectSpec() {
         onNew();
     }
 
-    public static ConversationEntryPayloadSpec getDefault() {
-        ConversationEntryPayloadSpec omas = new ConversationEntryPayloadSpec();
-        omas.text = "This is the first message from the client";
+    public static ReplyObjectSpec getDefault() {
+        ReplyObjectSpec omas = new ReplyObjectSpec();
+        omas.id = "";
         return omas;
     }
 
     public HashMap<String, Object> asCallParameters() {
         HashMap<String, Object> map = new HashMap<>();
-        if (!TextUtils.isEmpty(text)) {
-            map.put("text", this.text);
-        } else if (!TextUtils.isEmpty(freeTextReply)) {
-            map.put("freeTextReply", this.freeTextReply);
-        }
-        if (!TextUtils.isEmpty(dateReply)) {
-            map.put("dateReply", this.dateReply);
-        }
-        if (!TextUtils.isEmpty(dateTimeReply)) {
-            map.put("dateTimeReply", this.dateTimeReply);
-        }
-        if (choiceReply != null) {
-            map.put("choiceReply", this.choiceReply);
+        if (!TextUtils.isEmpty(id)) {
+            map.put("id", this.id);
         }
         return map;
     }
@@ -62,58 +44,18 @@ public class ConversationEntryPayloadSpec {
     //** Get/Set                                                                                 **/
     //*********************************************************************************************/
 
-    public String getText() {
-        return text;
+    public String getId() {
+        return id;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public List<EntryAttachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<EntryAttachment> attachments) {
-        this.attachments = attachments;
-    }
-
-    public String getFreeTextReply() {
-        return freeTextReply;
-    }
-
-    public void setFreeTextReply(String freeTextReply) {
-        this.freeTextReply = freeTextReply;
-    }
-
-    public String getDateReply() {
-        return dateReply;
-    }
-
-    public void setDateReply(String dateReply) {
-        this.dateReply = dateReply;
-    }
-
-    public String getDateTimeReply() {
-        return dateTimeReply;
-    }
-
-    public void setDateTimeReply(String dateTimeReply) {
-        this.dateTimeReply = dateTimeReply;
-    }
-
-    public ReplyObjectSpec getChoiceReply() {
-        return choiceReply;
-    }
-
-    public void setChoiceReply(ReplyObjectSpec choiceReply) {
-        this.choiceReply = choiceReply;
+    public void setId(String id) {
+        this.id = id;
     }
 //endregion
 
     //region Countable
 
-    private final static String CLASSTAG = kModulePrefix + "." + ConversationEntryPayloadSpec.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + ReplyObjectSpec.class.getSimpleName();
     @GSONexcludeOutbound
     private String TAG;
     private static int lifeTimeInstances;
@@ -170,10 +112,10 @@ public class ConversationEntryPayloadSpec {
         return theJson;
     }
 
-    public static ConversationEntryPayloadSpec fromJson(String json) {
+    public static ReplyObjectSpec fromJson(String json) {
         GsonBuilder builder = standardBuilder();
         Gson jsonDeserializer = builder.create();
-        ConversationEntryPayloadSpec theObject = jsonDeserializer.fromJson(json, ConversationEntryPayloadSpec.class);
+        ReplyObjectSpec theObject = jsonDeserializer.fromJson(json, ReplyObjectSpec.class);
         return theObject;
     }
 

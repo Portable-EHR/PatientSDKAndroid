@@ -18,6 +18,10 @@ public class ConversationEntryPayload {
     private String id;
     private ConversationEntryPayloadType type;
     private ConversationEntryConsentStatus status;
+    private String freeTextReply;
+    private String dateReply;
+    private String dateTimeReply;
+    private ConversationPossibleReply choiceReply;
 
     public String getText() {
         return text;
@@ -117,5 +121,37 @@ public class ConversationEntryPayload {
 
     public void setStatus(ConversationEntryConsentStatus status) {
         this.status = status;
+    }
+
+    public String getFreeTextReply() {
+        return freeTextReply;
+    }
+
+    public void setFreeTextReply(String freeTextReply) {
+        this.freeTextReply = freeTextReply;
+    }
+
+    public String getDateReply() {
+        return dateReply;
+    }
+
+    public void setDateReply(String dateReply) {
+        this.dateReply = dateReply;
+    }
+
+    public String getDateTimeReply() {
+        return dateTimeReply;
+    }
+
+    public void setDateTimeReply(String dateTimeReply) {
+        this.dateTimeReply = dateTimeReply;
+    }
+
+    public ConversationPossibleReply getChoiceReply() {
+        return choiceReply;
+    }
+
+    public void setChoiceReply(ConversationPossibleReply choiceReply) {
+        this.choiceReply = choiceReply;
     }
 }

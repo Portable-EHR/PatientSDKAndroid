@@ -64,7 +64,7 @@ public class IBNotification implements Comparable<IBNotification> {
     private IBLabRequest labRequest;
     private IBLabResult labResult;
     private IBMessageContent message;
-    private IBPrivateMessageInfo telexInfo;
+    private IBPrivateMessageInfo privateMessageInfo;
     @Nullable
     private Appointment appointment;
     @Nullable
@@ -232,7 +232,7 @@ public class IBNotification implements Comparable<IBNotification> {
         }
 
         if (isPrivateMessage()) {
-            if (this.telexInfo != null && null != this.telexInfo.getAcknowledgedOn()) {
+            if (this.privateMessageInfo != null && null != this.privateMessageInfo.getAcknowledgedOn()) {
                 return true;
             }
         }
@@ -251,7 +251,7 @@ public class IBNotification implements Comparable<IBNotification> {
         if (isAppointment()) {
             return (getAppointment() != null) && (getAppointment().isActionRequired() || (getAppointment().isInPlay() && hasUnseenContent()));
         } else if (isPrivateMessage()) {
-            if (this.telexInfo != null && null == this.telexInfo.getAcknowledgedOn()) {
+            if (this.privateMessageInfo != null && null == this.privateMessageInfo.getAcknowledgedOn()) {
                 return true;
             }
         }
@@ -436,12 +436,12 @@ public class IBNotification implements Comparable<IBNotification> {
         this.seq = seq;
     }
 
-    public IBPrivateMessageInfo getTelexInfo() {
-        return telexInfo;
+    public IBPrivateMessageInfo getPrivateMessageInfo() {
+        return privateMessageInfo;
     }
 
-    public void setTelexInfo(IBPrivateMessageInfo telexInfo) {
-        this.telexInfo = telexInfo;
+    public void setPrivateMessageInfo(IBPrivateMessageInfo privateMessageInfo) {
+        this.privateMessageInfo = privateMessageInfo;
     }
 
     @Nullable
@@ -601,13 +601,13 @@ public class IBNotification implements Comparable<IBNotification> {
         replyEnvelope = fresh.replyEnvelope;
         progress = fresh.progress;
 
-        if (null == telexInfo) {
-            telexInfo = fresh.telexInfo;
+        if (null == privateMessageInfo) {
+            privateMessageInfo = fresh.privateMessageInfo;
         } else {
-            if (null == fresh.telexInfo) {
-                telexInfo = null;
+            if (null == fresh.privateMessageInfo) {
+                privateMessageInfo = null;
             } else {
-                telexInfo.updateWith(fresh.telexInfo);
+                privateMessageInfo.updateWith(fresh.privateMessageInfo);
             }
         }
 

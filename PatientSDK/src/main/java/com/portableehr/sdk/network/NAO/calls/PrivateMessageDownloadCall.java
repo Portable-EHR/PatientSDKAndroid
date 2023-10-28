@@ -42,62 +42,62 @@ public class PrivateMessageDownloadCall extends AbstractEHRCall {
     @Override
     public EHRRequestStatus parse(String json) {
 
-        GsonBuilder            builder  = GsonFactory.standardBuilder();
-        Gson                   parser   = builder.create();
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson parser = builder.create();
         PrivateMessageResponse response = parser.fromJson(json, PrivateMessageResponse.class);
 
-        this.responseContent=response.getPrivateMessage();
+        this.responseContent = response.getPrivateMessage();
         return response.getRequestStatus();
 
     }
 
 
-     //region Countable
+    //region Countable
 
-     private final static String  CLASSTAG       = kModulePrefix + "." + PrivateMessageDownloadCall.class.getSimpleName();
-     @GSONexcludeOutbound
-     private              String  TAG;
-     private static       int     lifeTimeInstances;
-     private static       int     numberOfInstances;
-     @GSONexcludeOutbound
-     private              int     instanceNumber;
-     @GSONexcludeOutbound
-     private static       boolean classCountable = false;
+    private final static String CLASSTAG = kModulePrefix + "." + PrivateMessageDownloadCall.class.getSimpleName();
+    @GSONexcludeOutbound
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
+    @GSONexcludeOutbound
+    private int instanceNumber;
+    @GSONexcludeOutbound
+    private static boolean classCountable = false;
 
-     @Override
-     protected void finalize() throws Throwable {
-         super.finalize();
-         numberOfInstances--;
-         if (numberOfInstances < 0) {
-             Log.e(getLogTAG(), "*** You did not call onNew in your ctor(s)");
-         }
-         if (classCountable) {
-             Log.d(getLogTAG(), "finalize  ");
-         }
-     }
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        numberOfInstances--;
+        if (numberOfInstances < 0) {
+            Log.e(getLogTAG(), "*** You did not call onNew in your ctor(s)");
+        }
+        if (classCountable) {
+            Log.d(getLogTAG(), "finalize  ");
+        }
+    }
 
-     protected void onNew() {
-         TAG = CLASSTAG;
-         numberOfInstances++;
-         lifeTimeInstances++;
-         instanceNumber = lifeTimeInstances;
-         if (classCountable) {
-             Log.d(getLogTAG(), "onNew ");
-         }
-     }
+    protected void onNew() {
+        TAG = CLASSTAG;
+        numberOfInstances++;
+        lifeTimeInstances++;
+        instanceNumber = lifeTimeInstances;
+        if (classCountable) {
+            Log.d(getLogTAG(), "onNew ");
+        }
+    }
 
-     private String getLogLabel() {
-         return Integer.toHexString(instanceNumber) + "/" + Integer.toHexString(numberOfInstances);
-     }
+    private String getLogLabel() {
+        return Integer.toHexString(instanceNumber) + "/" + Integer.toHexString(numberOfInstances);
+    }
 
-     public static  void setClassCountable( boolean isIt) {
-         classCountable = isIt;
-     }
+    public static void setClassCountable(boolean isIt) {
+        classCountable = isIt;
+    }
 
-     private String getLogTAG() {
-         TAG = CLASSTAG + " [" + getLogLabel() + "] ";
-         return TAG;
-     }
+    private String getLogTAG() {
+        TAG = CLASSTAG + " [" + getLogLabel() + "] ";
+        return TAG;
+    }
 
-     //endregion
+    //endregion
 }

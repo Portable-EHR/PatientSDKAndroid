@@ -1,6 +1,7 @@
 package com.portableehr.sdk.network.NAO.inbound.patient.appointment;
 
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -28,41 +29,41 @@ public class Appointment {
         setClassCountable(false);
     }
 
-    private String           guid;
-    private Date             lastUpdated;
+    private String guid;
+    private Date lastUpdated;
     @Nullable
-    private IBPractitioner   practitioner;
-    private String           withPersonNamed;
-    private String           location;
-    private String           description;
-    private Date             startTime;
-    private Date             endTime;
+    private IBPractitioner practitioner;
+    private String withPersonNamed;
+    private String location;
+    private String description;
+    private Date startTime;
+    private Date endTime;
     @Nullable
-    private IBUserInfo       confirmedBy;
+    private IBUserInfo confirmedBy;
     @Nullable
-    private IBUserInfo       cancelledBy;
+    private IBUserInfo cancelledBy;
     @Nullable
-    private Date             cancelledOn;
+    private Date cancelledOn;
     @Nullable
-    private Date             confirmedOn;
-    private Date             createdOn;
-    private String           state;
+    private Date confirmedOn;
+    private Date createdOn;
+    private String state;
     private IBDispensaryInfo dispensaryInfo;
-    private IBPatientInfo    patientInfo;
+    private IBPatientInfo patientInfo;
     @Nullable
-    private Boolean          patientCanCancel;
+    private Boolean patientCanCancel;
     @Nullable
-    private Boolean          patientMustConfirm;
+    private Boolean patientMustConfirm;
     @Nullable
-    private Date             confirmBefore;
-    private String           confirmationStatus;
-    private boolean          cancelFeesApply;
+    private Date confirmBefore;
+    private String confirmationStatus;
+    private boolean cancelFeesApply;
     @Nullable
-    private Date             sendSMSon;
+    private Date sendSMSon;
     @Nullable
-    private Date             smsSentOn;
+    private Date smsSentOn;
     @Nullable
-    private Date             remindOn;
+    private Date remindOn;
 
 
     //region ctors
@@ -340,6 +341,10 @@ public class Appointment {
         return isConfirmed() || isCancelled();
     }
 
+    public boolean isObsolete() {
+        return state.equals("obsolete");
+    }
+
     public boolean areCancelFeesInPlay() {
         if (!isPending()) {
             return false;
@@ -416,7 +421,7 @@ public class Appointment {
         } else {
 
             Date eternity = new Date(Long.MAX_VALUE);
-            Date now      = new Date();
+            Date now = new Date();
             /*
             0                             now                Eternity
             +------------------------------+=================+
@@ -522,15 +527,15 @@ public class Appointment {
         setClassCountable(false);
     }
 
-    private final static String  CLASSTAG = kModulePrefix + "." + Appointment.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + Appointment.class.getSimpleName();
     @GSONexcludeOutbound
-    private              String  TAG;
-    private static       int     lifeTimeInstances;
-    private static       int     numberOfInstances;
+    private String TAG;
+    private static int lifeTimeInstances;
+    private static int numberOfInstances;
     @GSONexcludeOutbound
-    private              int     instanceNumber;
+    private int instanceNumber;
     @GSONexcludeOutbound
-    private static       boolean classCountable;
+    private static boolean classCountable;
 
     @Override
     protected void finalize() throws Throwable {
@@ -574,16 +579,16 @@ public class Appointment {
 
 
     public String asJson() {
-        GsonBuilder builder        = GsonFactory.standardBuilder();
-        Gson        jsonSerializer = builder.create();
-        String      theJson        = jsonSerializer.toJson(this, this.getClass());
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonSerializer = builder.create();
+        String theJson = jsonSerializer.toJson(this, this.getClass());
         return theJson;
     }
 
     public static Appointment fromJson(String json) {
-        GsonBuilder builder          = GsonFactory.standardBuilder();
-        Gson        jsonDeserializer = builder.create();
-        Appointment theObject        = jsonDeserializer.fromJson(json, Appointment.class);
+        GsonBuilder builder = GsonFactory.standardBuilder();
+        Gson jsonDeserializer = builder.create();
+        Appointment theObject = jsonDeserializer.fromJson(json, Appointment.class);
         return theObject;
     }
 

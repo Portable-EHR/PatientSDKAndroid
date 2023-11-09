@@ -149,7 +149,8 @@ public class AppState {
     private IBAppInfo appInfo;
     private List<IBConsent> consents;
     private IBConsent currentConsent;
-    private EntryAttachment entryAttachment;
+    private List<EntryAttachment> entryAttachments;
+    private int currentArrachmentIndex = 0;
 
 
     @GSONexcludeOutbound
@@ -384,12 +385,17 @@ public class AppState {
         return this.OAMPserver;
     }
 
-    public EntryAttachment getEntryAttachment() {
-        return entryAttachment;
+    public List<EntryAttachment> getEntryAttachments() {
+        return entryAttachments;
     }
 
-    public void setEntryAttachment(EntryAttachment entryAttachment) {
-        this.entryAttachment = entryAttachment;
+    public void setEntryAttachments(List<EntryAttachment> entryAttachments, int currentArrachmentIndex) {
+        this.entryAttachments = entryAttachments;
+        this.currentArrachmentIndex = currentArrachmentIndex;
+    }
+
+    public int getCurrentArrachmentIndex() {
+        return currentArrachmentIndex;
     }
 
     @Nullable

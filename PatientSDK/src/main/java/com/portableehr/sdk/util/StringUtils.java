@@ -1,6 +1,8 @@
 package com.portableehr.sdk.util;
 
 import androidx.annotation.Nullable;
+
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.PrintWriter;
@@ -46,8 +48,11 @@ public class StringUtils {
 
     public static String obfuscateEmail(String email) {
         String result = "email@example.com";
+        if (TextUtils.isEmpty(email)) {
+            return "**";
+        }
         try {
-            int    domainIdx = email.lastIndexOf("@");
+            int domainIdx = email.lastIndexOf("@");
             String domain;
             String tld;
             domain = email.substring(domainIdx + 1);
@@ -63,9 +68,9 @@ public class StringUtils {
                 obDomain = StringUtils.obfuscate(obDomain, 2, 2);
             }
             result = "@" + obDomain + result;
-            String addressee   = email.substring(0, domainIdx);
+            String addressee = email.substring(0, domainIdx);
             String obAdressee;
-            int    adresseeLen = addressee.length();
+            int adresseeLen = addressee.length();
             if (adresseeLen <= 4) {
                 obAdressee = StringUtils.fillerString(adresseeLen, "*");
             } else {
@@ -120,7 +125,7 @@ public class StringUtils {
         }
 
         String filler = "";
-        int    size   = strawman.length() - (keepFirst + keepLast);
+        int size = strawman.length() - (keepFirst + keepLast);
         if (size > 0) {
             filler = StringUtils.fillerString(size, "*");
         }
@@ -158,7 +163,7 @@ public class StringUtils {
 
     public static String getStackTrace(Exception e) {
         StringWriter sw = new StringWriter();
-        PrintWriter  pw = new PrintWriter(sw);
+        PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
         return pw.toString();
     }

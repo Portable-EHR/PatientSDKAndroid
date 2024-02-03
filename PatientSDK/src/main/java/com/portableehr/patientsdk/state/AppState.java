@@ -433,7 +433,17 @@ public class AppState {
 
             this.appInfo = old.appInfo;
             this.deviceInfo = old.deviceInfo;
-            this.deviceLanguage = old.deviceLanguage;
+//            this.deviceLanguage = old.deviceLanguage;
+            // Rahul: This should always pickup language from device
+            String dl = Locale.getDefault().getISO3Language();
+            if (dl.equals("eng")) {
+                dl = "en";
+            } else if (dl.startsWith("fr")) {
+                dl = "fr";
+            } else {
+                dl = old.deviceLanguage;
+            }
+            this.deviceLanguage = dl;
             this.enforcePrivacy = old.enforcePrivacy;
             this.notificationModel = NotificationModel.getInstance();
             this.serviceModel = ServiceModel.getInstance();

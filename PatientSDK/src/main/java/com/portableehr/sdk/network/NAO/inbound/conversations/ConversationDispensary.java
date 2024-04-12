@@ -9,18 +9,19 @@ import com.google.gson.GsonBuilder;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 import com.portableehr.sdk.network.gson.GsonFactory;
 
-public class ConversationEntryPoint {
-    private String id;
-    private String name;
-    private String description;
-    private String feedId;
+import java.util.List;
 
-    public String getId() {
-        return id;
+public class ConversationDispensary {
+    private String guid;
+    private String name;
+    private List<ConversationEntryPoint> entryPoints;
+
+    public String getGuid() {
+        return guid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
     public String getName() {
@@ -31,23 +32,15 @@ public class ConversationEntryPoint {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public List<ConversationEntryPoint> getEntryPoints() {
+        return entryPoints;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEntryPoints(List<ConversationEntryPoint> entryPoints) {
+        this.entryPoints = entryPoints;
     }
 
-    public String getFeedId() {
-        return feedId;
-    }
-
-    public void setFeedId(String feedId) {
-        this.feedId = feedId;
-    }
-
-    public ConversationEntryPoint() {
+    public ConversationDispensary() {
         super();
         onNew();
     }
@@ -61,10 +54,10 @@ public class ConversationEntryPoint {
         return theJson;
     }
 
-    public static ConversationEntryPoint fromJson(String json) {
+    public static ConversationDispensary fromJson(String json) {
         GsonBuilder builder = GsonFactory.standardBuilder();
         Gson jsonDeserializer = builder.create();
-        ConversationEntryPoint theObject = jsonDeserializer.fromJson(json, ConversationEntryPoint.class);
+        ConversationDispensary theObject = jsonDeserializer.fromJson(json, ConversationDispensary.class);
         return theObject;
     }
 
@@ -72,7 +65,7 @@ public class ConversationEntryPoint {
 
     //region Countable
 
-    private final static String CLASSTAG = kModulePrefix + "." + ConversationEntryPoint.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + ConversationDispensary.class.getSimpleName();
     @GSONexcludeOutbound
     private String TAG;
     private static int lifeTimeInstances;

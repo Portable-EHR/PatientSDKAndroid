@@ -3,26 +3,27 @@ package com.portableehr.sdk.network.NAO.responses.conversations;
 import android.util.Log;
 
 import com.portableehr.sdk.EHRLibRuntime;
-import com.portableehr.sdk.network.NAO.inbound.conversations.ConversationEntry;
+import com.portableehr.sdk.network.NAO.inbound.IBDispensary;
+import com.portableehr.sdk.network.NAO.inbound.conversations.ConversationDispensary;
 import com.portableehr.sdk.network.ehrApi.EHRServerResponse;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
 import java.util.List;
 
 
-public class GetConvoEntriesServerResponse extends EHRServerResponse {
+public class PullConvoEntryPointsServerResponse extends EHRServerResponse {
 
-    List<ConversationEntry> responseContent;
+    List<ConversationDispensary> responseContent;
 
-    public List<ConversationEntry> getResponseContent() {
+    public List<ConversationDispensary> getResponseContent() {
         return responseContent;
     }
 
-    public void setResponseContent(List<ConversationEntry> responseContent) {
+    public void setResponseContent(List<ConversationDispensary> responseContent) {
         this.responseContent = responseContent;
     }
 
-    public GetConvoEntriesServerResponse() {
+    public PullConvoEntryPointsServerResponse() {
         super();
         onNew();
     }
@@ -30,7 +31,7 @@ public class GetConvoEntriesServerResponse extends EHRServerResponse {
 
     //region Countable
 
-    private final static String CLASSTAG = EHRLibRuntime.kModulePrefix + "." + GetConvoEntriesServerResponse.class.getSimpleName();
+    private final static String CLASSTAG = EHRLibRuntime.kModulePrefix + "." + PullConvoEntryPointsServerResponse.class.getSimpleName();
     @GSONexcludeOutbound
     private String TAG;
     private static int lifeTimeInstances;

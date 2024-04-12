@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.portableehr.sdk.network.NAO.inbound.conversations.ConversationEntry;
-import com.portableehr.sdk.network.NAO.responses.conversations.GetConvoEntriesServerResponse;
+import com.portableehr.sdk.network.NAO.inbound.conversations.ConversationDispensary;
+import com.portableehr.sdk.network.NAO.responses.conversations.PullConvoEntryPointsServerResponse;
 import com.portableehr.sdk.network.ehrApi.AbstractEHRCall;
 import com.portableehr.sdk.network.ehrApi.EHRRequestStatus;
 import com.portableehr.sdk.network.ehrApi.EHRServerRequest;
@@ -18,20 +18,20 @@ import com.portableehr.sdk.network.protocols.ICompletionHandler;
 import java.util.List;
 
 
-public class GetConvoEntriesCall extends AbstractEHRCall {
+public class PullConvoEntryPointsCall extends AbstractEHRCall {
 
-    private List<ConversationEntry> responseContent;
+    private List<ConversationDispensary> responseContent;
 
-    public GetConvoEntriesCall(EHRServerRequest serverRequest, ICompletionHandler completionHandler) {
+    public PullConvoEntryPointsCall(EHRServerRequest serverRequest, ICompletionHandler completionHandler) {
         super(serverRequest, completionHandler);
         onNew();
     }
 
-    public List<ConversationEntry> getResponseContent() {
+    public List<ConversationDispensary> getResponseContent() {
         return responseContent;
     }
 
-    public void setResponseContent(List<ConversationEntry> responseContent) {
+    public void setResponseContent(List<ConversationDispensary> responseContent) {
         this.responseContent = responseContent;
     }
 
@@ -41,7 +41,7 @@ public class GetConvoEntriesCall extends AbstractEHRCall {
         GsonBuilder builder = GsonFactory.standardBuilder();
         Gson parser = builder.create();
 
-        GetConvoEntriesServerResponse response = parser.fromJson(json, GetConvoEntriesServerResponse.class);
+        PullConvoEntryPointsServerResponse response = parser.fromJson(json, PullConvoEntryPointsServerResponse.class);
 
         if (response != null && response.getRequestStatus() != null) {
             this.setRequestStatus(response.getRequestStatus());
@@ -53,12 +53,13 @@ public class GetConvoEntriesCall extends AbstractEHRCall {
         }
 
         return null;
+
     }
 
 
     //region Countable
 
-    private final static String CLASSTAG = kModulePrefix + "." + GetConvoEntriesCall.class.getSimpleName();
+    private final static String CLASSTAG = kModulePrefix + "." + PullConvoEntryPointsCall.class.getSimpleName();
     @GSONexcludeOutbound
     private String TAG;
     private static int lifeTimeInstances;

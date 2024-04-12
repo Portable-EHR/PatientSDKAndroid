@@ -12,16 +12,16 @@ import com.portableehr.sdk.network.gson.GsonFactory;
 import java.util.List;
 
 public class ConversationDispensary {
-    private String guid;
+    private String dispensaryId;
     private String name;
     private List<ConversationEntryPoint> entryPoints;
 
-    public String getGuid() {
-        return guid;
+    public String getDispensaryId() {
+        return dispensaryId;
     }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setDispensaryId(String dispensaryId) {
+        this.dispensaryId = dispensaryId;
     }
 
     public String getName() {

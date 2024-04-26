@@ -31,6 +31,7 @@ public class NotificationsModelFilter {
     }
 
     Integer cursorIndex;
+    boolean showDeletedNotifications;
     boolean showArchivedNotifications;
     boolean showAlertNotifications;
     boolean showPatientNotifications;
@@ -57,6 +58,7 @@ public class NotificationsModelFilter {
         this.setType(type);
         showUnreadOnly = false;
         showArchivedNotifications = false;
+        showDeletedNotifications = true;
         this.setType(type);
     }
 
@@ -240,6 +242,13 @@ public class NotificationsModelFilter {
         this.showArchivedNotifications = showArchivedNotifications;
     }
 
+    public boolean isShowDeletedNotifications() {
+        return showDeletedNotifications;
+    }
+
+    public void setShowDeletedNotifications(boolean showDeletedNotifications) {
+        this.showDeletedNotifications = showDeletedNotifications;
+    }
 
     public boolean isShowUnreadOnly() {
         return showUnreadOnly;
@@ -451,6 +460,10 @@ public class NotificationsModelFilter {
 
         // todo : patient/info/alert are breaking this shit , because backend is sending "patient" level for
         // todo : level , ie the backend does not behave as "mailbox" dispatcher
+
+        if (notification.isDeleted() && !showDeletedNotifications) {
+            return false;
+        }
 
         if (notification.isAppointment()) {
             return keepAppointments;

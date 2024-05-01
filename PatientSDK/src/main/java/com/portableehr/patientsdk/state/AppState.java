@@ -7,6 +7,7 @@ import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -74,7 +75,7 @@ public class AppState {
 
         // in the beginning, there was a keystore !
 
-        if (null != _instance) {
+        if (null != _instance && deepReset) {
             Log.e(CLASSTAG, "create() : called but we already have an instance. Trying to release prior instance");
             _instance = null;
         }
@@ -423,7 +424,12 @@ public class AppState {
             if (old.getStackKey() == null) {
                 // this should take care of devices that were activated
                 // prior to having a stack key in the model !
-                this.setStackKey("CA.prod");
+                if (PehrSDKConfiguration.getInstance() != null
+                        && !TextUtils.isEmpty(PehrSDKConfiguration.getInstance().getAppStackKey())) {
+                    this.setStackKey(PehrSDKConfiguration.getInstance().getAppStackKey());
+                } else {
+                    this.setStackKey("CA.prod");
+                }
             } else {
                 // server and OAMPserver are not persisted
                 this.setStackKey(old.stackKey);

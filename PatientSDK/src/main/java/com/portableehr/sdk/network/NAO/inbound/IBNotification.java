@@ -249,7 +249,7 @@ public class IBNotification implements Comparable<IBNotification> {
 
     public boolean isActionRequired(@SuppressWarnings("unused") IBUser user) {
         if (isAppointment()) {
-            return (getAppointment() != null) && (getAppointment().isActionRequired() || (getAppointment().isInPlay() && hasUnseenContent()));
+            return (getAppointment() != null) && (hasUnseenContent() && (getAppointment().isActionRequired() || getAppointment().isInPlay()));
         } else if (isPrivateMessage()) {
             if (this.privateMessageInfo != null && null == this.privateMessageInfo.getAcknowledgedOn()) {
                 return true;

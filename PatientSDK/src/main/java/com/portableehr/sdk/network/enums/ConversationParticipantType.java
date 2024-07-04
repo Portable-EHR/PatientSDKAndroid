@@ -8,7 +8,8 @@ import com.google.gson.annotations.SerializedName;
 public enum ConversationParticipantType {
 
     @SerializedName("staff") STAFF("staff"),
-    @SerializedName("admin") ADMIN("admin");
+    @SerializedName("admin") ADMIN("admin"),
+    @SerializedName("system") SYSTEM("system");
 
     @NonNull
     private final String text;

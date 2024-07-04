@@ -13,7 +13,8 @@ public enum ConversationEntryType {
     @SerializedName("participant") PARTICIPANT("participant"),
     @SerializedName("share") SHARE("share"),
     @SerializedName("assign") TASK("assign"),
-    @SerializedName("message") MESSAGE("message");
+    @SerializedName("message") MESSAGE("message"),
+    @SerializedName("announcement") ANNOUNCEMENT("announcement");
 
     private final String text;
 

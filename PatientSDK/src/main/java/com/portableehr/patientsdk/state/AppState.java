@@ -188,7 +188,9 @@ public class AppState {
         as.patient = null;
         as.enforcePrivacy = false;
 //        app.setPrivacyCompromised(true);
-        as.userModel.setPollingPolicy(ModelRefreshPolicyEnum.NONE);
+        if (as.userModel != null) {
+            as.userModel.setPollingPolicy(ModelRefreshPolicyEnum.NONE);
+        }
         UserModel.resetOnDevice();
         as.userModel = UserModel.getInstance();
         as.userModel.setPollingPolicy(ModelRefreshPolicyEnum.NONE);

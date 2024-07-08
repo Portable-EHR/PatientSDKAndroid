@@ -3,8 +3,8 @@ plugins {
 }
 apply plugin: 'maven'
 
-String NEXUS_USERNAME = 'rasthana'
-String NEXUS_PASSWORD = 'Educat10n~!@'
+String NEXUS_USERNAME = 'NGA6wp6Y'
+String NEXUS_PASSWORD = 'mSrlT5Jbg/Ra9LGL0sVmZ0z5vvfkEp/eGpgbrSpoR08K'
 
 android {
     compileSdkVersion 30

@@ -1,7 +1,10 @@
 package com.portableehr.sdk.network.NAO.inbound.conversations;
 
 
-public class ConversationEnvelope {
+import java.io.Serializable;
+import java.sql.Date;
+
+public class ConversationEnvelope implements Serializable {
     private String guid;
     private String status;
     private String location;
@@ -9,6 +12,16 @@ public class ConversationEnvelope {
     private String clientTittle;
     private String teaser;
     private String lastUpdated;
+
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    private String createdOn;
     private int unread;
 
     public String getGuid() {

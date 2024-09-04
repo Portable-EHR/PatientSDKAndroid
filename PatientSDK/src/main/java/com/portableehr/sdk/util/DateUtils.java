@@ -117,6 +117,11 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
+    public static String displayDate1(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy, hh:mm a", Locale.getDefault());
+        return dateFormat.format(date);
+    }
+
     public static String displayDate(String dateStr) {
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).parse(dateStr);

@@ -24,6 +24,26 @@ public class ConversationEntryPayloadSpec {
     private String freeTextReply;
     private String dateReply;
     private String dateTimeReply;
+
+    public String getSurveyIdReply() {
+        return surveyIdReply;
+    }
+
+    public void setSurveyIdReply(String surveyIdReply) {
+        this.surveyIdReply = surveyIdReply;
+    }
+
+    private String surveyIdReply;
+
+    public String getQuestionnaire() {
+        return questionnaire;
+    }
+
+    public void setQuestionnaire(String questionnaire) {
+        this.questionnaire = questionnaire;
+    }
+
+    private String questionnaire;
     private ReplyObjectSpec choiceReply;
     private List<EntryAttachment> attachments;
 
@@ -53,6 +73,15 @@ public class ConversationEntryPayloadSpec {
         if (choiceReply != null) {
             map.put("choiceReply", this.choiceReply);
         }
+
+        if(!TextUtils.isEmpty(questionnaire)) {
+            map.put("questionnaire", this.questionnaire);
+        }
+
+        if(!TextUtils.isEmpty(surveyIdReply)) {
+            map.put("surveyIdReply", this.surveyIdReply);
+        }
+
         return map;
     }
 

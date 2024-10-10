@@ -8,8 +8,8 @@ public enum ConversationReplyType {
     @SerializedName("free_text") FREE_TEXT("free_text"),
     @SerializedName("date") DATE("date"),
     @SerializedName("date_time") DATE_TIME("date_time"),
-    @SerializedName("choice") CHOICE("choice");
-
+    @SerializedName("choice") CHOICE("choice"),
+    @SerializedName("questionnaire") QUESTIONNAIRE("questionnaire");
     private final String text;
 
 

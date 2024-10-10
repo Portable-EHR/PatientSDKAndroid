@@ -1,5 +1,6 @@
 package com.portableehr.sdk.network.NAO.inbound.conversations;
 
+import com.portableehr.patient.sdk.network.NAO.inbound.conversations.EntryQuestionnaires;
 import com.portableehr.sdk.network.enums.ConversationEntryConsentStatus;
 import com.portableehr.sdk.network.enums.ConversationEntryPayloadType;
 
@@ -24,6 +25,27 @@ public class ConversationEntryPayload {
     private String dateTimeReply;
     private ConversationPossibleReply choiceReply;
 
+    public String getSurveyIdReply() {
+        return surveyIdReply;
+    }
+
+    public void setSurveyIdReply(String surveyIdReply) {
+        this.surveyIdReply = surveyIdReply;
+    }
+
+    private String surveyIdReply;
+
+    public List<EntryQuestionnaires> getQuestionnaires() {
+        return questionnaires;
+    }
+
+    public void setQuestionnaires(List<EntryQuestionnaires> questionnaires) {
+        this.questionnaires = questionnaires;
+    }
+
+    private List<EntryQuestionnaires> questionnaires;
+
+    
     public String getText() {
         return text;
     }

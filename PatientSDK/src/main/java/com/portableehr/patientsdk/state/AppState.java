@@ -479,6 +479,10 @@ public class AppState {
         return getInstance().getUserModel().save() && getInstance().getNotificationModel().save() && getInstance().save();
     }
 
+//    public static boolean saveInSecureCredentials() {
+//        return  getInstance().getUserModel()
+//    }
+
     public boolean save() {
         Context context = EHRLibRuntime.getInstance().getContext();
         AppState as = this;

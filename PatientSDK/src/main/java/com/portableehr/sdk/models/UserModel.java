@@ -2,10 +2,13 @@ package com.portableehr.sdk.models;
 
 import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 
+import static java.lang.System.out;
+
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.portableehr.patient.patientsdk.utils.EncryptionUtils;
 import com.portableehr.patientsdk.state.AppState;
 import com.portableehr.sdk.EHRLibRuntime;
 import com.portableehr.sdk.network.NAO.inbound.IBDispensaryStaffUser;
@@ -103,18 +106,42 @@ public class UserModel extends AbstractPollingModel {
         String folderFqn = FileUtils.pathOfUserDirectory(userGuid);
         if (folderFqn != null) {
             String jsonFqn = getFQN(userGuid);
+
             String json = FileUtils.readJsonFromFilePath(jsonFqn);
-            if (json != null) {
-                um = UserModel.fromJson(json);
-            } else {
-                Log.e(CLASSTAG, "loadFromDevice : got null json for " + userGuid);
-                json = com.portableehr.patientsdk.utils.FileUtils.readUserModelJson(EHRLibRuntime.getInstance().getContext());
-                if (json != null) {
-                    um = UserModel.fromJson(json);
-                } else {
-                    Log.e(CLASSTAG, "loadFromDevice : got null json for readUserModelJson");
+
+
+            String decryptedJsonData = null;
+
+            try {
+                decryptedJsonData = EncryptionUtils.decrypt(json);
+                System.out.println("Decrypted Data: " + decryptedJsonData);
+                if (decryptedJsonData != null){
+                    um = UserModel.fromJson(decryptedJsonData);
+                }else{
+                    Log.e(CLASSTAG, "loadFromDevice : got null json for " + userGuid);
+                    json = com.portableehr.patientsdk.utils.FileUtils.readUserModelJson(EHRLibRuntime.getInstance().getContext());
+                    if (json != null) {
+                        um = UserModel.fromJson(json);
+                    } else {
+                        Log.e(CLASSTAG, "loadFromDevice : got null json for readUserModelJson");
+                    }
                 }
+            } catch (Exception e) {
+                Log.e(CLASSTAG, "Unable to decrypt json");
+                um = UserModel.fromJson(json);
             }
+
+//            if (json != null) {
+//                um = UserModel.fromJson(json);
+//            } else {
+//                Log.e(CLASSTAG, "loadFromDevice : got null json for " + userGuid);
+//                json = com.portableehr.patientsdk.utils.FileUtils.readUserModelJson(EHRLibRuntime.getInstance().getContext());
+//                if (json != null) {
+//                    um = UserModel.fromJson(json);
+//                } else {
+//                    Log.e(CLASSTAG, "loadFromDevice : got null json for readUserModelJson");
+//                }
+//            }
         } else {
             Log.e(CLASSTAG, "loadFromDevice : null path for user model !");
             String json = com.portableehr.patientsdk.utils.FileUtils.readUserModelJson(EHRLibRuntime.getInstance().getContext());
@@ -314,6 +341,8 @@ public class UserModel extends AbstractPollingModel {
 
 
     public boolean save() {
+
+
         UserModel um = this;
         boolean ret = false;
         File fd = EHRLibRuntime.getInstance().getContext().getFilesDir();
@@ -332,7 +361,19 @@ public class UserModel extends AbstractPollingModel {
                     }
                     Writer out = new BufferedWriter(new OutputStreamWriter(
                             new FileOutputStream(getFQN()), StandardCharsets.UTF_8));
-                    out.write(um.asJson());
+
+//                    out.write(um.asJson());
+
+                    EncryptionUtils.generateKey();
+                    String encryptedData = null;
+                    try {
+                        encryptedData = EncryptionUtils.encrypt(um.asJson());
+                        out.write(encryptedData);
+                    } catch (Exception e) {
+                        System.out.println("Caught exception while encrypting data");
+                        throw new RuntimeException(e);
+                    }
+
                     out.close();
                     ret = true;
                 } catch (Exception e) {
@@ -343,7 +384,8 @@ public class UserModel extends AbstractPollingModel {
                 Log.e(getLogTAG(), "getFilesDIr returned a file !!!");
             }
         }
-//        this.user.setApiKey(apiKey);
+        this.user.setApiKey(apiKey);
+
         return ret;
     }
 

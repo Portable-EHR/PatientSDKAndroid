@@ -197,9 +197,9 @@ public abstract class AbstractEHRCall implements ICaller {
                 String jsonResponse = resultBytes.toString("UTF-8");
                 stream.close();
 
-                if (this.verbose) {
-                    Log.v(TAG, "Got response : \n" + jsonResponse);
-                }
+//                if (this.verbose) {
+//                    Log.v(TAG, "Got response : \n" + jsonResponse);
+//                }
                 this.setRequestStatus(parse(jsonResponse));
 
                 if (null != requestStatus) {

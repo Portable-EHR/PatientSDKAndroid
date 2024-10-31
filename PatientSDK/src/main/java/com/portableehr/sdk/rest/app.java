@@ -71,42 +71,42 @@ public class app {
         @SuppressWarnings("unused")
         public static class AccountApi {
             //region login
-            public UserLoginCall getLoginCall(ICompletionHandler handler) {
-                return getLoginCall(handler, RestCallOptions.defaults());
-            }
+//            public UserLoginCall getLoginCall(ICompletionHandler handler) {
+//                return getLoginCall(handler, RestCallOptions.defaults());
+//            }
+//
+//            public UserLoginCall getLoginCall(ICompletionHandler handler, RestCallOptions options) {
+//                EHRServerRequest request = EHRLibRuntime.getInstance().getRequest(IBUser.guest(), "/app/user/account", "login");
+//                UserLoginCall    theCall = new UserLoginCall(request, handler);
+//                theCall.applyOptions(options);
+//                return theCall;
+//            }
 
-            public UserLoginCall getLoginCall(ICompletionHandler handler, RestCallOptions options) {
-                EHRServerRequest request = EHRLibRuntime.getInstance().getRequest(IBUser.guest(), "/app/user/account", "login");
-                UserLoginCall    theCall = new UserLoginCall(request, handler);
-                theCall.applyOptions(options);
-                return theCall;
-            }
-
-            public void login(String guid, String secret, ICompletionHandler handler, RestCallOptions options) {
-                UserLoginCall theCall = getLoginCall(handler, options);
-                theCall.getServerRequest().setParameter("guid", guid);
-                theCall.getServerRequest().setParameter("method", "password");
-                theCall.getServerRequest().setParameter("secret", secret);
-                theCall.applyOptions(options);
-                theCall.call();
-            }
-
-            public void login(String guid, String password, ICompletionHandler handler) {
-                this.login(guid, password, handler, RestCallOptions.defaults());
-            }
-
-            public void accessWithPIN(String guid, String secret, ICompletionHandler handler, RestCallOptions options) {
-                UserLoginCall theCall = getLoginCall(handler, options);
-                theCall.getServerRequest().setParameter("guid", guid);
-                theCall.getServerRequest().setParameter("method", "accessPIN");
-                theCall.getServerRequest().setParameter("secret", secret);
-                theCall.applyOptions(options);
-                theCall.call();
-            }
-
-            public void accessWithPIN(String guid, String secret, ICompletionHandler handler) {
-                this.accessWithPIN(guid, secret, handler, RestCallOptions.defaults());
-            }
+//            public void login(String guid, String secret, ICompletionHandler handler, RestCallOptions options) {
+//                UserLoginCall theCall = getLoginCall(handler, options);
+//                theCall.getServerRequest().setParameter("guid", guid);
+//                theCall.getServerRequest().setParameter("method", "password");
+//                theCall.getServerRequest().setParameter("secret", secret);
+//                theCall.applyOptions(options);
+//                theCall.call();
+//            }
+//
+//            public void login(String guid, String password, ICompletionHandler handler) {
+//                this.login(guid, password, handler, RestCallOptions.defaults());
+//            }
+//
+//            public void accessWithPIN(String guid, String secret, ICompletionHandler handler, RestCallOptions options) {
+//                UserLoginCall theCall = getLoginCall(handler, options);
+//                theCall.getServerRequest().setParameter("guid", guid);
+//                theCall.getServerRequest().setParameter("method", "accessPIN");
+//                theCall.getServerRequest().setParameter("secret", secret);
+//                theCall.applyOptions(options);
+//                theCall.call();
+//            }
+//
+//            public void accessWithPIN(String guid, String secret, ICompletionHandler handler) {
+//                this.accessWithPIN(guid, secret, handler, RestCallOptions.defaults());
+//            }
 
             //endregion
         }

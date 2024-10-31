@@ -62,13 +62,17 @@ public class EncryptionUtils {
         System.arraycopy(iv, 0, encryptedData, 0, iv.length);
         System.arraycopy(encryptionBytes, 0, encryptedData, iv.length, encryptionBytes.length);
 
-        return Base64.getEncoder().encodeToString(encryptedData);
+//        return Base64.getEncoder().encodeToString(encryptedData);
+        return android.util.Base64.encodeToString(encryptedData, android.util.Base64.DEFAULT);
+
     }
 
     public static String decrypt(String encryptedData) throws Exception {
         SecretKey secretKey = getSecretKey();
 
-        byte[] encryptedBytes = Base64.getDecoder().decode(encryptedData);
+//        byte[] encryptedBytes = Base64.getDecoder().decode(encryptedData);
+        byte[] encryptedBytes = android.util.Base64.decode(encryptedData, android.util.Base64.DEFAULT);
+
 
         // Extract the IV and the encrypted data
         byte[] iv = new byte[12]; // AES-GCM recommends 12-byte IV

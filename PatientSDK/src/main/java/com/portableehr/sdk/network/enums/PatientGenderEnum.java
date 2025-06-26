@@ -21,8 +21,8 @@ import androidx.annotation.NonNull;
 
 @SuppressWarnings("unused")
 public enum PatientGenderEnum {
-    MALE("M"),
-    FEMALE("F"),
+    M("M"),
+    F("F"),
     NON_BINARY("N");
 
     private final String text;

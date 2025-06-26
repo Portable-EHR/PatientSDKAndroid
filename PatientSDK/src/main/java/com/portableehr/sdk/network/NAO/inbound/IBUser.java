@@ -12,8 +12,10 @@ import com.portableehr.sdk.network.gson.GSONexcludeInbound;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 import com.portableehr.sdk.network.gson.GsonFactory;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by : yvesleborg
@@ -22,7 +24,8 @@ import java.util.HashMap;
  * Copyright Portable Ehr Inc, 2019
  */
 
-public class IBUser {
+public class IBUser implements Serializable {
+//    private static final long serialVersionUID = 1L;
 
     private String guid;
     private String apiKey;
@@ -39,6 +42,25 @@ public class IBUser {
     private boolean forcePasswordChange;
     private boolean deviceEmailVerified;
     private boolean deviceMobileVerified;
+    private int userUnreadNotificationCount;
+
+    public int getUserUnreadNotificationCount() {
+        return userUnreadNotificationCount;
+    }
+
+    public void setUserUnreadNotificationCount(int userUnreadNotificationCount) {
+        this.userUnreadNotificationCount = userUnreadNotificationCount;
+    }
+
+    public List<IBPatient> getDependants() {
+        return dependants;
+    }
+
+    public void setDependants(List<IBPatient> dependants) {
+        this.dependants = dependants;
+    }
+
+    private List<IBPatient> dependants;
 
     public IBDsuPrefs getDsuPrefs() {
         return dsuPrefs;

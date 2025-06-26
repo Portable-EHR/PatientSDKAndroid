@@ -1,5 +1,9 @@
 package com.portableehr.sdk.network.NAO.inbound.conversations;
 
+import com.portableehr.patient.sdk.network.NAO.inbound.conversations.ParticipantResponders;
+
+import java.util.ArrayList;
+
 public class ConversationParticipant {
     private String guid;
     private String participantId;
@@ -11,6 +15,15 @@ public class ConversationParticipant {
     private String middleName;
     private boolean mySelf;
     private boolean active;
+    ArrayList<ParticipantResponders> responders;
+
+    public ArrayList<ParticipantResponders> getResponders() {
+        return responders;
+    }
+
+    public void setResponders(ArrayList<ParticipantResponders> responders) {
+        this.responders = responders;
+    }
 
     public String getGuid() {
         return guid;

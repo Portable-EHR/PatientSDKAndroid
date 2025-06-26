@@ -26,6 +26,15 @@ public class ConversationEntry {
     private List<ConversationReplyType> possibleRepliesTypes;
     private ConversationEntry repliesTo;
     private List<ConversationPossibleReply> replyChoiceOptions;
+    private String representedBy;
+
+    public String getRepresentedBy() {
+        return representedBy;
+    }
+
+    public void setRepresentedBy(String representedBy) {
+        this.representedBy = representedBy;
+    }
 
     public String getId() {
         return id;

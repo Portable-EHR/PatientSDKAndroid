@@ -1,5 +1,6 @@
 package com.portableehr.sdk.network.NAO.inbound;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,9 @@ import java.util.Date;
  * Copyright Portable Ehr Inc, 2019
  */
 
-public class IBPatient {
+public class IBPatient implements Serializable {
+//    private static final long serialVersionUID = 1L;
+
     private String     guid;
     private String     name;
     private String     firstName;
@@ -21,6 +24,15 @@ public class IBPatient {
     private IBContact  contact;
     private IBAddress  address;
     private IBUserInfo userInfo;
+    private Integer    unreadNotifications;
+
+    public Integer getUnreadNotifications() {
+        return unreadNotifications;
+    }
+
+    public void setUnreadNotifications(Integer unreadNotifications) {
+        this.unreadNotifications = unreadNotifications;
+    }
 
     public String getGuid() {
         return guid;

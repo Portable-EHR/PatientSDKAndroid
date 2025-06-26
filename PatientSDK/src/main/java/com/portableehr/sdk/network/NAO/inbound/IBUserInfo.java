@@ -1,5 +1,7 @@
 package com.portableehr.sdk.network.NAO.inbound;
 
+import java.io.Serializable;
+
 /**
  * Created by : yvesleborg
  * Date       : 2017-04-01
@@ -7,7 +9,7 @@ package com.portableehr.sdk.network.NAO.inbound;
  * Copyright Portable Ehr Inc, 2019
  */
 
-public class IBUserInfo {
+public class IBUserInfo implements Serializable {
     private String    guid;
     private IBContact contact;
     private String    username;

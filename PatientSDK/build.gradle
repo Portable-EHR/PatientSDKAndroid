@@ -44,10 +44,18 @@ uploadArchives {
         }
     }
     repositories.mavenLocal()
+
+}
+
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/portable-ehr/maven")
+
+    }
+
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.4.0'
@@ -56,7 +64,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'com.q42:qlassified:0.1.0'
+    implementation 'com.q42:qlassified:0.1.1'
+    implementation 'com.madgag.spongycastle:core:1.54.0.0'
+    implementation 'com.madgag.spongycastle:prov:1.54.0.0'
 }
 
 apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
@@ -71,3 +81,4 @@ task installLocal(type: Upload) {
         }
     }
 }
+

@@ -2,23 +2,35 @@ package com.portableehr.sdk.network.NAO.responses;
 
 import android.util.Log;
 
+import com.portableehr.patient.sdk.network.NAO.responses.ConsentsResponseContent;
 import com.portableehr.sdk.EHRLibRuntime;
 import com.portableehr.sdk.network.NAO.inbound.IBConsent;
 import com.portableehr.sdk.network.ehrApi.EHRServerResponse;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
+
 
 import java.util.List;
 
 
 public class GetConsentsServerResponse extends EHRServerResponse {
 
-    List<IBConsent> responseContent;
+//    List<IBConsent> responseContent;
+//
+//    public List<IBConsent> getResponseContent() {
+//        return responseContent;
+//    }
+//
+//    public void setResponseContent(List<IBConsent> responseContent) {
+//        this.responseContent = responseContent;
+//    }
 
-    public List<IBConsent> getResponseContent() {
+    ConsentsResponseContent responseContent;
+
+    public ConsentsResponseContent getResponseContent() {
         return responseContent;
     }
 
-    public void setResponseContent(List<IBConsent> responseContent) {
+    public void setResponseContent(ConsentsResponseContent responseContent) {
         this.responseContent = responseContent;
     }
 
@@ -78,3 +90,5 @@ public class GetConsentsServerResponse extends EHRServerResponse {
     //endregion
 
 }
+
+

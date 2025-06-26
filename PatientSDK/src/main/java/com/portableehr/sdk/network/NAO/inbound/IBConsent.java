@@ -9,6 +9,8 @@ import com.google.gson.GsonBuilder;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 import com.portableehr.sdk.network.gson.GsonFactory;
 
+import java.util.List;
+
 public class IBConsent {
 
     private String guid;
@@ -20,6 +22,16 @@ public class IBConsent {
     private String activeFrom;
     private IBConsentGranted consent;
 
+
+    public List<IBConsentGranted> getConsents() {
+        return consents;
+    }
+
+    public void setConsents(List<IBConsentGranted> consents) {
+        this.consents = consents;
+    }
+
+    private List<IBConsentGranted> consents;
     public IBConsent() {
         onNew();
     }

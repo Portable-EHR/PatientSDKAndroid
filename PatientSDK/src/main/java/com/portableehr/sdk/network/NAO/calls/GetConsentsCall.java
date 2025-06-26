@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.portableehr.patient.sdk.network.NAO.responses.ConsentsResponseContent;
 import com.portableehr.sdk.network.NAO.inbound.IBConsent;
 import com.portableehr.sdk.network.NAO.responses.GetConsentsServerResponse;
 import com.portableehr.sdk.network.ehrApi.AbstractEHRCall;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class GetConsentsCall extends AbstractEHRCall {
 
-    private List<IBConsent> responseContent;
+    private ConsentsResponseContent responseContent;
 
     public GetConsentsCall(EHRServerRequest serverRequest, ICompletionHandler completionHandler) {
         super(serverRequest, completionHandler);
@@ -28,10 +29,16 @@ public class GetConsentsCall extends AbstractEHRCall {
     }
 
     public List<IBConsent> getResponseContent() {
-        return responseContent;
+
+        List<IBConsent> consent = responseContent.user;
+        ConsentsResponseContent.Patients patients = responseContent.patients;
+        IBConsent all = patients.all.get(0);
+        consent.add(all);
+
+        return consent;
     }
 
-    public void setResponseContent(List<IBConsent> responseContent) {
+    public void setResponseContent(ConsentsResponseContent responseContent) {
         this.responseContent = responseContent;
     }
 

@@ -16,13 +16,14 @@ import com.portableehr.sdk.network.enums.LanguageEnum;
 import com.portableehr.sdk.network.enums.PatientGenderEnum;
 import com.portableehr.sdk.network.gson.GSONexcludeOutbound;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 import static com.portableehr.sdk.network.gson.GsonFactory.standardBuilder;
 
 @SuppressWarnings("unused")
-public class IBContact {
+public class IBContact implements Serializable {
 
     private String            name;
     private String            firstName;

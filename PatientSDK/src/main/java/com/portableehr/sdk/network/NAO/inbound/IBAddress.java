@@ -9,6 +9,8 @@ import com.portableehr.sdk.network.gson.GsonFactory;
 
 import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
 
+import java.io.Serializable;
+
 /**
  * Created by : yvesleborg
  * Date       : 2017-03-31
@@ -16,7 +18,7 @@ import static com.portableehr.sdk.EHRLibRuntime.kModulePrefix;
  * Copyright Portable Ehr Inc, 2019
  */
 
-public class IBAddress {
+public class IBAddress implements Serializable {
     private String street1;
     private String street2;
     private String city;

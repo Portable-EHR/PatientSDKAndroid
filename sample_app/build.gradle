@@ -31,7 +31,10 @@ android {
 repositories {
     maven {
         url = uri("https://maven.pkg.github.com/portable-ehr/maven")
-
+        credentials {
+            username = ''
+            password = ''
+        }
     }
 }
 

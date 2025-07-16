@@ -259,6 +259,8 @@ public class IBNotification implements Comparable<IBNotification> {
         return envelopeActionRequired() || hasUnseenContent();
     }
 
+
+
     public boolean isConversation() {
         if (null == aboutType) {
             return false;

@@ -9,7 +9,9 @@ public enum ConversationParticipantType {
 
     @SerializedName("staff") STAFF("staff"),
     @SerializedName("admin") ADMIN("admin"),
-    @SerializedName("system") SYSTEM("system");
+    @SerializedName("system") SYSTEM("system"),
+    @SerializedName("client") CLIENT("client");
+
 
     @NonNull
     private final String text;
